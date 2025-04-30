@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import NoteList from "./components/NoteList.jsx";
 import SaveNotes from "./components/SaveNotes.jsx";
-import EditNote from "./components/EditNote.jsx";
 import Navbar from "./components/Navbar.jsx";
+import EditNoteModal from "./components/EditNoteModal.jsx";
 import toast, { Toaster } from "react-hot-toast";
 import Footer from "./components/Footer.jsx";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedNoteId, setSelectedNoteId] = useState(null);
 
   useEffect(() => {
     fetch("https://noteshub-ki3s.onrender.com/notes")
@@ -84,16 +85,24 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={<NoteList notes={filteredNotes} onDelete={handleDelete} />}
+            element={
+              <NoteList
+                notes={filteredNotes}
+                onDelete={handleDelete}
+                setSelectedNoteId={setSelectedNoteId}
+                handleUpdate={handleUpdate}
+              />
+            }
           />
           <Route path="/save" element={<SaveNotes onCreate={handleCreate} />} />
-          <Route
-            path="/edit/:id"
-            element={<EditNote onUpdate={handleUpdate} />}
-          />
         </Routes>
       </main>
-      <Footer/>
+      <EditNoteModal
+        selectedNoteId={selectedNoteId}
+        setSelectedNoteId={setSelectedNoteId}
+        handleUpdate={handleUpdate}
+      />
+      <Footer />
     </div>
   );
 }

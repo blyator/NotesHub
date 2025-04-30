@@ -9,24 +9,19 @@ export default function Navbar({ search, setSearch }) {
     setSearch(e.target.value);
   };
 
-  
   useEffect(() => {
     themeChange(false);
-    
     const savedTheme = localStorage.getItem("theme");
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
 
-  
   const handleThemeChange = (e) => {
     const selectedTheme = e.target.getAttribute("data-theme");
     document.documentElement.setAttribute("data-theme", selectedTheme);
     localStorage.setItem("theme", selectedTheme);
   };
 
-  
   const themes = [
-           
     { name: "Emerald", value: "emerald" },
     { name: "Retro", value: "retro" },
     { name: "Valentine", value: "valentine" },
@@ -37,11 +32,11 @@ export default function Navbar({ search, setSearch }) {
     { name: "Night", value: "night" },
     { name: "Coffee", value: "coffee" },
     { name: "Sunset", value: "sunset" },
-    ];
+  ];
 
   return (
-    <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
-      <div className="navbar-start">
+    <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50 p-0">
+      <div className="navbar-start ml-0">
         <a
           className="btn btn-ghost text-xl text-base-content"
           onClick={() => navigate("/")}
@@ -49,8 +44,8 @@ export default function Navbar({ search, setSearch }) {
           My Notes
         </a>
       </div>
-      <div className="navbar-center px-2 ml-2 md:ml-0 md:max-w-48">
-        <div className="relative w-full max-w-40 md:max-w-48">
+      <div className="navbar-center px-2 ml-0 md:ml-8 max-w-32 md:max-w-80 lg:max-w-96">
+        <div className="relative w-full">
           <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
             <svg
               className="w-3.5 h-3.5 text-base-content/50"
@@ -78,7 +73,7 @@ export default function Navbar({ search, setSearch }) {
           />
         </div>
       </div>
-      <div className="navbar-end">
+      <div className="navbar-end mr-4">
         <div className="flex gap-2 items-center">
           <div className="dropdown dropdown-end">
             <div
@@ -126,28 +121,25 @@ export default function Navbar({ search, setSearch }) {
               <div className="w-10 rounded-full">
                 <img
                   alt="User avatar"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src="https://i.pinimg.com/736x/f1/54/da/f154da6a5577947ab19cf2766830ba9e.jpg"
                 />
               </div>
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-42 p-2 shadow"
             >
               <li>
-                <a className="justify-between">
-                  Profile
-                  
-                </a>
+                <a className="justify-between">Profile</a>
               </li>
               <li>
-                <a>Settings</a>
-              </li>
-              <li>
-                <a>Logout</a>
+                <a className="justify-between">Settings</a>
               </li>
               <li>
                 <a>Trash</a>
+              </li>
+              <li>
+                <a>Logout</a>
               </li>
             </ul>
           </div>

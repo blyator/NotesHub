@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import DeletePopUp from "./DeletePopUp.jsx";
 
-export default function Note({ note, onDelete }) {
-  const navigate = useNavigate();
+export default function Note({
+  note,
+  onDelete,
+  setSelectedNoteId,
+  handleUpdate,
+}) {
   const [open, setOpen] = useState(false);
 
-  const handleEdit = () => {
-    navigate(`/edit/${note.id}`);
+  const handleCardClick = (e) => {
+    const selection = window.getSelection();
+    if (selection.toString().trim() !== "") {
+      return;
+    }
+    setSelectedNoteId(note.id);
   };
 
   const handleDeleteClick = () => {
@@ -17,7 +24,12 @@ export default function Note({ note, onDelete }) {
 
   return (
     <>
-      <div className="card bg-base-100 shadow-md p-4 w-full hover:bg-base-200 group">
+      <div
+        className="card bg-base-100 shadow-md p-4 w-full hover:bg-base-200 group cursor-pointer"
+        onClick={handleCardClick}
+        role="button"
+        aria-label={`Edit note: ${note.title}`}
+      >
         <div className="card-body">
           <h2 className="card-title text-xl text-base-content">{note.title}</h2>
           <ul className="list-disc list-inside mt-2">
@@ -31,15 +43,21 @@ export default function Note({ note, onDelete }) {
             <button
               className="btn btn-ghost btn-sm"
               type="button"
-              onClick={handleEdit}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedNoteId(note.id);
+              }}
               aria-label="Edit note"
             >
-              <PencilSquareIcon className="w-5 h-5 fill-primary" />
+              <PencilIcon className="w-5 h-5 fill-primary" />
             </button>
             <button
               className="btn btn-ghost btn-sm"
               type="button"
-              onClick={handleDeleteClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteClick();
+              }}
               aria-label="Delete note"
             >
               <TrashIcon className="w-5 h-5 fill-secondary" />
