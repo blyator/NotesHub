@@ -32,13 +32,24 @@ export default function Navbar({ search, setSearch }) {
     { name: "Night", value: "night" },
     { name: "Coffee", value: "coffee" },
     { name: "Sunset", value: "sunset" },
+    { name: "Dark", value: "dark" },
+    { name: "Light", value: "light" },
+    { name: "Wireframe", value: "wireframe" },
+    { name: "Christmas", value: "christmas" },
+    { name: "Cmyk", value: "cmyk" },
+    { name: "Autumn", value: "autumn" },
+    { name: "Business", value: "business" },
+    { name: "Fantasy", value: "fantasy" },
+    { name: "Cyberpunk", value: "cyberpunk" },
+    { name: "Dracula", value: "dracula" },
+    { name: "Winter", value: "winter" },
   ];
 
   return (
     <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50 p-0">
-      <div className="navbar-start ml-0">
+      <div className="navbar-start ml-6">
         <a
-          className="btn btn-ghost text-xl text-base-content"
+          className="text-base sm:text-xl text-primary-content bg-primary px-2 sm:px-4 py-1 sm:py-2 rounded-2xl sm:rounded-3xl"
           onClick={() => navigate("/")}
         >
           My Notes
@@ -65,10 +76,10 @@ export default function Navbar({ search, setSearch }) {
           </div>
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search ..."
             value={search}
             onChange={handleSearchChange}
-            className="input input-bordered input-sm w-full pl-8"
+            className="input input-ghost input-sm w-full pl-8"
             aria-label="Search notes"
           />
         </div>
@@ -79,13 +90,13 @@ export default function Navbar({ search, setSearch }) {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-sm"
+              className="btn btn-ghost btn-xs bg-primary text-primary-content"
               aria-label="Select theme"
             >
               Looks
               <svg
-                width="12px"
-                height="12px"
+                width="10px"
+                height="10px"
                 className="inline-block h-2 w-2 fill-current opacity-60"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 2048 2048"
@@ -118,7 +129,7 @@ export default function Navbar({ search, setSearch }) {
               className="btn btn-ghost btn-circle avatar"
               aria-label="User menu"
             >
-              <div className="w-10 rounded-full">
+              <div className="w-10 rounded-full border-2 border-primary">
                 <img
                   alt="User avatar"
                   src="https://i.pinimg.com/736x/f1/54/da/f154da6a5577947ab19cf2766830ba9e.jpg"

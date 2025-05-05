@@ -78,10 +78,10 @@ export default function App() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto min-h-screen flex flex-col bg-base-100">
+    <div className="w-full mx-0 lg:max-w-none min-h-screen flex flex-col bg-base-100">
       <Toaster position="top-right" />
       <Navbar search={search} setSearch={setSearch} />
-      <main className="p-4 flex-grow">
+      <main className="p-2 flex-grow">
         <Routes>
           <Route
             path="/"

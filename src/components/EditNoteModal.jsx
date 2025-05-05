@@ -1,66 +1,73 @@
-import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
-export default function EditNoteModal({ selectedNoteId, setSelectedNoteId, handleUpdate }) {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+export default function EditNoteModal({
+  selectedNoteId,
+  setSelectedNoteId,
+  handleUpdate,
+}) {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch note data when modal opens
   useEffect(() => {
     if (selectedNoteId) {
       setLoading(true);
       fetch(`https://noteshub-ki3s.onrender.com/notes/${selectedNoteId}`)
         .then((res) => res.json())
         .then((data) => {
-          setTitle(data.title || '');
-          setContent(data.items && data.items.length > 0 ? data.items.join('\n') : '');
+          setTitle(data.title || "");
+          setContent(
+            data.items && data.items.length > 0 ? data.items.join("\n") : ""
+          );
           setLoading(false);
         })
         .catch((err) => {
-          console.error('Failed:', err);
-          toast.error('Failed to load note', { className: 'alert alert-error' });
+          console.error("Failed:", err);
+          toast.error("Failed to load note", {
+            className: "alert alert-error",
+          });
           setLoading(false);
           setSelectedNoteId(null);
         });
     }
   }, [selectedNoteId]);
 
-  // Close modal
   const handleClose = () => {
     setSelectedNoteId(null);
-    setTitle('');
-    setContent('');
+    setTitle("");
+    setContent("");
   };
 
-  // Save changes
   const handleSave = () => {
     if (!title.trim()) {
-      toast.error('Please add a title', { className: 'alert alert-error' });
+      toast.error("Please add a title", { className: "alert alert-error" });
       return;
     }
     const items = content
-      .split('\n')
+      .split("\n")
       .map((item) => item.trim())
-      .filter((item) => item !== '');
+      .filter((item) => item !== "");
     const updatedNote = { title: title.trim(), items };
     handleUpdate(selectedNoteId, updatedNote);
     handleClose();
   };
 
-  // Handle Escape key
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === 'Escape') handleClose();
+      if (e.key === "Escape") handleClose();
     };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
   if (!selectedNoteId) return null;
 
   return (
-    <dialog id="edit_modal" className={`modal ${selectedNoteId ? 'modal-open' : ''}`}>
+    <dialog
+      id="edit_modal"
+      className={`modal ${selectedNoteId ? "modal-open" : ""}`}
+    >
       <div className="modal-box bg-base-100 rounded-box shadow-2xl p-6 max-w-md">
         <h3 className="font-bold text-lg mb-4">Edit Note</h3>
         {loading ? (
@@ -77,7 +84,7 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId, handl
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="input input-bordered w-full"
+                className="input input-ghost w-full"
                 aria-label="Note title"
                 required
               />
@@ -89,7 +96,7 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId, handl
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="textarea textarea-bordered w-full h-32"
+                className="textarea w-full h-32 border-none"
                 placeholder="Enter notes"
                 aria-label="Note content"
                 rows="4"

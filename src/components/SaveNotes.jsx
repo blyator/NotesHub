@@ -49,7 +49,7 @@ export default function SaveNotes({ onCreate }) {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="input input-bordered w-full"
+                className="input input-ghost w-full"
                 required
               />
             </div>
@@ -60,13 +60,16 @@ export default function SaveNotes({ onCreate }) {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="textarea textarea-bordered w-full"
+                className="textarea w-full border-none"
                 placeholder="Enter notes"
                 rows="4"
               />
             </div>
             <div className="card-actions justify-end">
-              <button type="submit" className="btn btn-primary text-primary-content">
+              <button
+                type="submit"
+                className="btn btn-primary text-primary-content"
+              >
                 Save
               </button>
               <button

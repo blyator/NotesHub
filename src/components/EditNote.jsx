@@ -48,7 +48,7 @@ export default function EditNote({ onUpdate }) {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="input input-bordered w-full"
+                className="input input-ghost w-full"
                 required
               />
             </div>
@@ -59,13 +59,16 @@ export default function EditNote({ onUpdate }) {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="textarea textarea-bordered w-full"
+                className="textarea w-full border-none"
                 placeholder="Enter note content"
                 rows="4"
               />
             </div>
             <div className="card-actions justify-end">
-              <button type="submit" className="btn btn-primary text-primary-content">
+              <button
+                type="submit"
+                className="btn btn-primary text-primary-content"
+              >
                 Save
               </button>
               <button
