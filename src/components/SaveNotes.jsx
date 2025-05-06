@@ -11,9 +11,11 @@ export default function SaveNotes({ onCreate }) {
     event.preventDefault();
 
     if (!title.trim()) {
-      toast.error("Oops! Please add a Title 😅", {
-        className: "alert alert-error",
-      });
+      toast.custom(
+        <div role="alert" class="alert alert-warning alert-soft">
+          <span>Please add a Title</span>
+        </div>
+      );
       return;
     }
 
