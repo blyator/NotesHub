@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="text-center text-gray-400 ">
+    <div className="footer footer-center p-4 text-base-content ">
       © {new Date().getFullYear()} NotesHub. All rights reserved
     </div>
   );
