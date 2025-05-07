@@ -4,9 +4,12 @@ export default function DeletePopUp({ open, setOpen, noteId, onDelete }) {
   const handleDelete = () => {
     onDelete(noteId);
     setOpen(false);
-    toast.success("It’s gone with the wind!🗑️", {
-      className: "alert alert-success",
-    });
+    toast.custom(
+      <div role="alert" class="alert alert-error alert-soft">
+        <span> Moved to trash🗑️</span>
+      </div>
+    );
+    return;
   };
 
   return (

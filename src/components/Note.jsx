@@ -46,6 +46,25 @@ export default function Note({
     setOpen(true);
   };
 
+  const getFormattedDate = () => {
+    const date = note.updatedAt || note.createdAt;
+    if (!date) return "Unknown Date";
+    try {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate.getTime())) return "Unknown Date";
+      return parsedDate.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return "Unknown Date";
+    }
+  };
+
+  const displayDate = getFormattedDate();
+  const dateLabel = note.updatedAt ? "Edited" : "Created";
+
   return (
     <>
       <div
@@ -67,7 +86,7 @@ export default function Note({
         </div>
 
         <div
-          className={`card-footer bg-primary/50 flex justify-end gap-2 p-2 rounded-b-lg transition-opacity duration-200 ${
+          className={`card-footer bg-primary/50 flex items-center justify-end gap-2 p-2 rounded-b-lg transition-opacity duration-200 ${
             isMobile
               ? isActive
                 ? "opacity-100"
@@ -75,6 +94,9 @@ export default function Note({
               : "opacity-0 group-hover:opacity-100"
           }`}
         >
+          <span className="text-xs text-primary-content">
+            {dateLabel}: {displayDate}
+          </span>
           <button
             className="btn btn-ghost btn-sm"
             type="button"

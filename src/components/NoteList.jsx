@@ -35,9 +35,11 @@ export default function NoteList({
         `}
       </style>
       {notes.length === 0 ? (
-        <p className="text-base-content/80">🗃️ No notes yet.</p>
+        <div className="flex items-center justify-center h-[60vh] text-base-content/80 text-center">
+          🗃️ No notes yet..
+        </div>
       ) : (
-        <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {notes.map((note) => (
             <div key={note.id} className="flex-grow">
               <Note
@@ -56,17 +58,17 @@ export default function NoteList({
       <button
         className="
     fixed 
-    bottom-14 right-12 
-    md:bottom-16 md:right-8 
+    bottom-8 right-8 
+    md:bottom-10 md:right-10 
     lg:bottom-[138.5px] lg:right-[37px] 
-    btn btn-lg md:btn-lg lg:btn-lg 
+    btn btn-xl lg:btn-lg 
     btn-circle bg-primary text-primary-content border-2 border-primary shadow-lg 
     hover:bg-primary-focus z-50 transition-transform hover:scale-110 hover:rotate-90 animate-fadeInUp"
         aria-label="Add new note"
         onClick={handleAddNote}
       >
         <svg
-          className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6"
+          className="w-7 h-7 md:w-8 md:h-8 lg:w-6 lg:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

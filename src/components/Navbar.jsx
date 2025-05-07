@@ -22,34 +22,27 @@ export default function Navbar({ search, setSearch }) {
   };
 
   const themes = [
-    { name: "Emerald", value: "emerald" },
+    { name: "Autumn", value: "autumn" },
+    { name: "Sunrise", value: "bumblebee" },
     { name: "Retro", value: "retro" },
-    { name: "Valentine", value: "valentine" },
-    { name: "Garden", value: "garden" },
+    { name: "Love", value: "valentine" },
     { name: "Forest", value: "forest" },
     { name: "Luxury", value: "luxury" },
-    { name: "Dracula", value: "dracula" },
-    { name: "Night", value: "night" },
-    { name: "Coffee", value: "coffee" },
     { name: "Sunset", value: "sunset" },
-    { name: "Dark", value: "dark" },
-    { name: "Light", value: "light" },
-    { name: "Wireframe", value: "wireframe" },
-    { name: "Christmas", value: "christmas" },
-    { name: "Cmyk", value: "cmyk" },
-    { name: "Autumn", value: "autumn" },
-    { name: "Business", value: "business" },
-    { name: "Fantasy", value: "fantasy" },
-    { name: "Cyberpunk", value: "cyberpunk" },
+    { name: "Royal", value: "business" },
+    { name: "Olive", value: "dim" },
+    { name: "Coffee", value: "coffee" },
+    { name: "Night", value: "night" },
     { name: "Dracula", value: "dracula" },
-    { name: "Winter", value: "winter" },
+    { name: "Caramel", value: "cyberpunk" },
+    { name: "Mango", value: "halloween" },
   ];
 
   return (
     <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50 p-0">
       <div className="navbar-start ml-6">
         <a
-          className="text-base sm:text-xl text-primary-content bg-primary px-2 sm:px-4 py-1 sm:py-2 rounded-2xl sm:rounded-3xl"
+          className="text-base sm:text-xl text-primary-content bg-primary px-2 sm:px-4 py-1 sm:py-2 rounded-2xl sm:rounded-3xl cursor-pointer"
           onClick={() => navigate("/")}
         >
           My Notes
@@ -90,7 +83,7 @@ export default function Navbar({ search, setSearch }) {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-xs bg-primary text-primary-content"
+              className="btn btn-ghost btn-xs bg-primary rounded-2xl text-primary-content"
               aria-label="Select theme"
             >
               Looks

@@ -40,15 +40,15 @@ export default function EditNoteModal({
   };
 
   const handleSave = () => {
-    if (!title.trim()) {
-      toast.error("Please add a title", { className: "alert alert-error" });
-      return;
-    }
     const items = content
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item !== "");
-    const updatedNote = { title: title.trim(), items };
+    const updatedNote = {
+      title: title.trim(),
+      items,
+      updatedAt: new Date().toISOString(),
+    };
     handleUpdate(selectedNoteId, updatedNote);
     handleClose();
   };
@@ -72,13 +72,13 @@ export default function EditNoteModal({
         <h3 className="font-bold text-lg mb-4">Edit Note</h3>
         {loading ? (
           <div className="flex justify-center">
-            <span className="loading loading-spinner text-primary"></span>
+            <span className="loading loading-ring text-primary"></span>
           </div>
         ) : (
           <form>
             <div className="form-control mb-4">
               <label className="label">
-                <span className="label-text">Title</span>
+                <span className="label-text"></span>
               </label>
               <input
                 type="text"
@@ -91,7 +91,7 @@ export default function EditNoteModal({
             </div>
             <div className="form-control mb-4">
               <label className="label">
-                <span className="label-text">Notes</span>
+                <span className="label-text"></span>
               </label>
               <textarea
                 value={content}

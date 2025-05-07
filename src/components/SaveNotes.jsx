@@ -24,7 +24,12 @@ export default function SaveNotes({ onCreate }) {
       .map((item) => item.trim())
       .filter((item) => item !== "");
 
-    const newNote = { title, items };
+    const newNote = {
+      id: Date.now().toString(),
+      title,
+      items,
+      createdAt: new Date().toISOString(),
+    };
     onCreate(newNote);
     setTitle("");
     setContent("");
@@ -45,7 +50,7 @@ export default function SaveNotes({ onCreate }) {
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-control mb-4">
               <label className="label">
-                <span className="label-text">Title</span>
+                <span className="label-text"></span>
               </label>
               <input
                 type="text"
@@ -53,11 +58,12 @@ export default function SaveNotes({ onCreate }) {
                 onChange={(e) => setTitle(e.target.value)}
                 className="input input-ghost w-full"
                 required
+                placeholder="Title"
               />
             </div>
             <div className="form-control mb-4">
               <label className="label">
-                <span className="label-text">Notes</span>
+                <span className="label-text"></span>
               </label>
               <textarea
                 value={content}
