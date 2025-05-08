@@ -1,6 +1,6 @@
-# My Notes 📓
+# NotesHub 📓
 
-**My Notes** is a modern, responsive note-taking web application built with React, DaisyUI 5, and Tailwind CSS. It allows users to create, edit, delete, and view notes in a clean, card-based interface. The app features a customizable theme system with theme-selection capabilities, and a user-friendly design optimized for both desktop and mobile devices. 🌟
+**Notehub** is a modern, responsive note-taking web application built with React, DaisyUI 5, and Tailwind CSS. It allows users to create, edit, delete, and view notes in a clean, card-based interface. The app features a customizable theme system with theme-selection capabilities, and a user-friendly design optimized for both desktop and mobile devices. 🌟
 
 ## Features 📝
 
