@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import NoteList from "./components/NoteList.jsx";
-import SaveNotes from "./components/SaveNotes.jsx";
-import Navbar from "./components/Navbar.jsx";
-import EditNoteModal from "./components/EditNoteModal.jsx";
-import toast, { Toaster } from "react-hot-toast";
+import Layout from "./components/Layout"; // Layout includes Navbar + Footer
+import NoteList from "./pages/NoteList.jsx";
+import SaveNotes from "./pages/SaveNotes.jsx";
+import EditNoteModal from "./pages/EditNoteModal.jsx";
 import Footer from "./components/Footer.jsx";
+import Landing from "./pages/Landing.jsx";
+import { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
@@ -120,11 +121,14 @@ export default function App() {
           removeDelay: 1000,
         }}
       />
-      <Navbar search={search} setSearch={setSearch} />
-      <main className="p-2 flex-grow">
-        <Routes>
+      <Routes>
+        {/* Landing has no layout (no navbar/footer) */}
+        <Route path="/" element={<Landing />} />
+
+        {/* Other pages wrapped in Layout */}
+        <Route element={<Layout search={search} setSearch={setSearch} />}>
           <Route
-            path="/"
+            path="/notes"
             element={
               <NoteList
                 notes={filteredNotes}
@@ -135,14 +139,15 @@ export default function App() {
             }
           />
           <Route path="/save" element={<SaveNotes onCreate={handleCreate} />} />
-        </Routes>
-      </main>
+        </Route>
+      </Routes>
+
+      {/* Always rendered */}
       <EditNoteModal
         selectedNoteId={selectedNoteId}
         setSelectedNoteId={setSelectedNoteId}
         handleUpdate={handleUpdate}
       />
-      <Footer />
     </div>
   );
 }

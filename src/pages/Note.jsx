@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
-import DeletePopUp from "./DeletePopUp.jsx";
+import DeletePopUp from "../components/DeletePopUp";
 
 export default function Note({
   note,

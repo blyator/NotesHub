@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Note from "./Note.jsx";
+import Note from "../pages/Note.jsx";
 
 export default function NoteList({
   notes,

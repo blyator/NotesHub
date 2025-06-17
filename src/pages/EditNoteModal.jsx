@@ -47,7 +47,6 @@ export default function EditNoteModal({
     const updatedNote = {
       title: title.trim(),
       items,
-      updatedAt: new Date().toISOString(),
     };
     handleUpdate(selectedNoteId, updatedNote);
     handleClose();
