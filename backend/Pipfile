@@ -11,6 +11,7 @@ flask-mail = "*"
 werkzeug = "*"
 flask-jwt-extended = "*"
 python-dotenv = "*"
+flask-cors = "*"
 
 [dev-packages]
 

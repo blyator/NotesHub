@@ -5,7 +5,7 @@ export default function DeletePopUp({ open, setOpen, noteId, onDelete }) {
     onDelete(noteId);
     setOpen(false);
     toast.custom(
-      <div role="alert" class="alert alert-error alert-soft">
+      <div role="alert" className="alert alert-error alert-soft">
         <span> Moved to trash🗑️</span>
       </div>
     );

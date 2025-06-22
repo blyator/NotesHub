@@ -1,9 +1,15 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { themeChange } from "theme-change";
+import { UserContext } from "../context/UserContext";
+import { NotesContext } from "../context/NotesContext";
 
-export default function Navbar({ search, setSearch }) {
+export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { logout_user, currentUser } = useContext(UserContext);
+  const { search, setSearch } = useContext(NotesContext);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -34,7 +40,6 @@ export default function Navbar({ search, setSearch }) {
     { name: "Coffee", value: "coffee" },
     { name: "Night", value: "night" },
     { name: "Dracula", value: "dracula" },
-    { name: "Caramel", value: "cyberpunk" },
     { name: "Mango", value: "halloween" },
   ];
 
@@ -45,38 +50,40 @@ export default function Navbar({ search, setSearch }) {
           className="text-base sm:text-xl text-primary-content bg-primary px-2 sm:px-4 py-1 sm:py-2 rounded-2xl sm:rounded-3xl cursor-pointer"
           onClick={() => navigate("/")}
         >
-          My Notes
+          Hello, {currentUser?.name?.split(" ")[0]}
         </a>
       </div>
-      <div className="navbar-center px-2 ml-0 md:ml-8 max-w-32 md:max-w-80 lg:max-w-96">
-        <div className="relative w-full">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-            <svg
-              className="w-3.5 h-3.5 text-base-content/50"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
+      {location.pathname !== "/profile" && (
+        <div className="navbar-center px-2 ml-0 md:ml-8 max-w-32 md:max-w-80 lg:max-w-96">
+          <div className="relative w-full">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <svg
+                className="w-3.5 h-3.5 text-base-content/50"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search ..."
+              value={search}
+              onChange={handleSearchChange}
+              className="input input-ghost input-sm w-full pl-8"
+              aria-label="Search notes"
+            />
           </div>
-          <input
-            type="text"
-            placeholder="Search ..."
-            value={search}
-            onChange={handleSearchChange}
-            className="input input-ghost input-sm w-full pl-8"
-            aria-label="Search notes"
-          />
         </div>
-      </div>
+      )}
       <div className="navbar-end mr-4">
         <div className="flex gap-2 items-center">
           <div className="dropdown dropdown-end">
@@ -86,7 +93,7 @@ export default function Navbar({ search, setSearch }) {
               className="btn btn-ghost btn-xs bg-primary rounded-2xl text-primary-content"
               aria-label="Select theme"
             >
-              Looks
+              Theme
               <svg
                 width="10px"
                 height="10px"
@@ -134,7 +141,12 @@ export default function Navbar({ search, setSearch }) {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-42 p-2 shadow"
             >
               <li>
-                <a className="justify-between">Profile</a>
+                <a
+                  onClick={() => navigate("/profile")}
+                  className="justify-between"
+                >
+                  Profile
+                </a>
               </li>
               <li>
                 <a className="justify-between">Settings</a>
@@ -143,7 +155,14 @@ export default function Navbar({ search, setSearch }) {
                 <a>Trash</a>
               </li>
               <li>
-                <a>Logout</a>
+                <a
+                  onClick={() => {
+                    logout_user();
+                    navigate("/login");
+                  }}
+                >
+                  Logout
+                </a>
               </li>
             </ul>
           </div>

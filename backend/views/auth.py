@@ -47,7 +47,7 @@ def login():
 
 
 
-@auth_bp.route("/loggedin", methods=["GET"])
+@auth_bp.route("/current_user", methods=["GET"])
 @jwt_required()
 def fetch_loggedin():
     current_user_id = get_jwt_identity()

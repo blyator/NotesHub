@@ -1,45 +1,62 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useContext } from "react";
+import { NotesContext } from "../context/NotesContext";
 
-export default function SaveNotes({ onCreate }) {
+export default function SaveNotes() {
+  const { handleCreate } = useContext(NotesContext);
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const navigate = useNavigate();
+  const [content, setContent] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (!title.trim()) {
       toast.custom(
-        <div role="alert" class="alert alert-warning alert-soft">
+        <div role="alert" className="alert alert-warning alert-soft">
           <span>Please add a Title</span>
         </div>
       );
       return;
     }
 
-    const items = content
+    const notes = content
       .split("\n")
-      .map((item) => item.trim())
-      .filter((item) => item !== "");
+      .map((note) => note.trim())
+      .filter((note) => note !== "");
 
-    const newNote = {
-      id: Date.now().toString(),
-      title,
-      items,
-      createdAt: new Date().toISOString(),
-    };
-    onCreate(newNote);
-    setTitle("");
-    setContent("");
-    navigate("/", { replace: true });
+    const newNote = { title, notes };
+
+    toast
+      .promise(
+        handleCreate(newNote),
+        {
+          loading: "saving...",
+          success: <b>Note saved!</b>,
+          error: <b>Failed to create note.</b>,
+        },
+        {
+          style: {
+            borderRadius: "10px",
+            background: "#5C3A21",
+            color: "#fff",
+          },
+          duration: 2000,
+        }
+      )
+      .then(() => {
+        setTitle("");
+        setContent("");
+        navigate("/notes", { replace: true });
+      });
   };
 
   const handleDiscard = () => {
     setTitle("");
     setContent("");
-    navigate("/", { replace: true });
+    navigate("/notes", { replace: true });
   };
 
   return (
@@ -49,9 +66,6 @@ export default function SaveNotes({ onCreate }) {
           <h3 className="card-title text-lg text-center">Save New</h3>
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-control mb-4">
-              <label className="label">
-                <span className="label-text"></span>
-              </label>
               <input
                 type="text"
                 value={title}
@@ -62,9 +76,6 @@ export default function SaveNotes({ onCreate }) {
               />
             </div>
             <div className="form-control mb-4">
-              <label className="label">
-                <span className="label-text"></span>
-              </label>
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
