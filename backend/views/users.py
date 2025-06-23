@@ -3,6 +3,7 @@ from models import db, User
 from flask_mail import Message
 from views.mailserver import send_email
 from werkzeug.security import generate_password_hash
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 users_bp = Blueprint("users_bp", __name__)
 
@@ -35,6 +36,7 @@ def create_user():
 
 
 @users_bp.route("/users", methods=["GET"])
+@jwt_required()
 def get_users():
     users = User.query.all()
     return jsonify([
@@ -50,6 +52,7 @@ def get_users():
 
 
 @users_bp.route("/users/<int:user_id>", methods=["PATCH"])
+@jwt_required()
 def update_user(user_id):
     user = User.query.get(user_id)
     if not user:
@@ -74,6 +77,7 @@ def update_user(user_id):
 
 
 @users_bp.route("/users/<int:user_id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not user:
