@@ -4,6 +4,8 @@ import { NotesContext } from "./NotesContext";
 
 export const UserContext = createContext();
 
+const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
+
 export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const { setNotes } = useContext(NotesContext);
@@ -16,7 +18,7 @@ export const UserProvider = ({ children }) => {
   //*********************register a user *********************
 
   async function register_user(name, email, password) {
-    const response = await fetch("http://127.0.0.1:5000/users", {
+    const response = await fetch(`${API_BASE_URL}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,7 +37,7 @@ export const UserProvider = ({ children }) => {
   //*****************login a user ********************
 
   async function login_user(email, password) {
-    return fetch("http://127.0.0.1:5000/login", {
+    return fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +64,7 @@ export const UserProvider = ({ children }) => {
     const token = localStorage.getItem("access_token");
     if (token) {
       try {
-        const response = await fetch("http://127.0.0.1:5000/current_user", {
+        const response = await fetch(`${API_BASE_URL}/current_user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
@@ -78,7 +80,7 @@ export const UserProvider = ({ children }) => {
   //***************logout a user *****************
 
   function logout_user() {
-    fetch("http://127.0.0.1:5000/logout", {
+    fetch(`${API_BASE_URL}/logout`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${auth_token}`,
@@ -106,7 +108,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (auth_token) {
-      fetch("http://127.0.0.1:5000/current_user", {
+      fetch(`${API_BASE_URL}/current_user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
