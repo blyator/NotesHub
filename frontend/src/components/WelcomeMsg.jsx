@@ -30,7 +30,7 @@ export default function WelcomeMsg() {
                       Welcome back!
                     </p>
                     <p className="mt-1 text-sm text-base-content/70">
-                      Logged in successfully 🎉
+                      Logged in
                     </p>
                   </div>
                 </div>
@@ -46,7 +46,7 @@ export default function WelcomeMsg() {
             </div>
           ),
           {
-            duration: 9000,
+            duration: 3000,
             position: "top-right",
           }
         );

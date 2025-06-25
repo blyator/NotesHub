@@ -1,54 +1,67 @@
-import React, { useState, useEffect } from "react";
-import { Edit3, BookOpen, Calendar, Star, X, Save } from "lucide-react";
+import React, { useState, useContext } from "react";
+import { Edit3, BookOpen, Calendar, X, Save, Lock, Camera } from "lucide-react";
+import { UserContext } from "../context/UserContext";
+import { NotesContext } from "../context/NotesContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const { currentUser } = useContext(UserContext);
+  const { notes } = useContext(NotesContext);
+  const navigate = useNavigate();
 
   // Form state for editing profile
   const [editForm, setEditForm] = useState({
     name: "",
     email: "",
     bio: "",
-    hobbies: [],
+    avatar: "",
   });
-
-  useEffect(() => {
-    const storedTheme = localStorage?.getItem("theme") || "valentine";
-    document.documentElement.setAttribute("data-theme", storedTheme);
-  }, []);
 
   // Mock user data. In a real application, this data would come from an API or a global state manager.
   const [user, setUser] = useState({
-    name: "Sarah Johnson",
-    email: "sarah.johnson@email.com",
-    joinDate: "March 2023",
     avatar: "https://picsum.photos/200/200?random=1",
     bio: "Passionate writer and creative thinker.",
-    stats: {
-      totalNotes: 347,
-      notesThisMonth: 42,
-      streakDays: 15,
-    },
-    accountType: "Premium",
-    storageUsedGB: 1.2,
-    storageTotalGB: 5,
-    hobbies: [
-      "Digital Art",
-      "Creative Writing",
-      "Reading",
-      "Journaling",
-      "Photography",
-    ],
   });
+
+  const getFormattedDate = () => {
+    const date = currentUser.created_at || currentUser.updated_at;
+    try {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate.getTime())) return "Unknown Date";
+      return parsedDate.toLocaleDateString("en-UK", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return "Unknown Date";
+    }
+  };
+
+  const getNotesThisMonth = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    return notes.filter((note) => {
+      const noteDate = new Date(note.created_at);
+      return (
+        noteDate.getMonth() === currentMonth &&
+        noteDate.getFullYear() === currentYear
+      );
+    }).length;
+  };
 
   // Open edit modal and populate form with current user data
   const openEditModal = () => {
     setEditForm({
-      name: user.name,
-      email: user.email,
+      name: currentUser.name,
+      email: currentUser.email,
       bio: user.bio,
-      hobbies: [...user.hobbies],
+      avatar: user.avatar,
     });
     setIsEditModalOpen(true);
   };
@@ -67,25 +80,32 @@ export default function Profile() {
     }));
   };
 
+  // Generate a new random avatar
+  const generateRandomAvatar = () => {
+    const randomId = Math.floor(Math.random() * 1000);
+    const newAvatar = `https://picsum.photos/200/200?random=${randomId}`;
+    setEditForm((prev) => ({
+      ...prev,
+      avatar: newAvatar,
+    }));
+  };
+
   // Save profile changes
   const saveProfile = () => {
-    // Filter out empty hobbies
-    const filteredHobbies = editForm.hobbies.filter(
-      (hobby) => hobby.trim() !== ""
-    );
-
     setUser((prev) => ({
       ...prev,
       name: editForm.name,
-      email: editForm.email,
       bio: editForm.bio,
-      hobbies: filteredHobbies,
+      avatar: editForm.avatar,
     }));
 
     closeEditModal();
+  };
 
-    // In a real app, you would make an API call here
-    console.log("Profile updated:", { ...editForm, hobbies: filteredHobbies });
+  // Handle change password
+  const handleChangePassword = () => {
+    // In a real app, this would open a password change modal or redirect to a password change page
+    alert("Change password functionality would be implemented here");
   };
 
   // Mock data for user achievements
@@ -176,11 +196,11 @@ export default function Profile() {
               {/* User Info and Quick Actions */}
               <div className="flex-1 text-center lg:text-left">
                 <h2 className="text-3xl font-bold text-base-content mb-2">
-                  {user.name}
+                  {currentUser.name}
                 </h2>
-                <p className="text-base-content/70 mb-2">{user.email}</p>
+                <p className="text-base-content/70 mb-2">{currentUser.email}</p>
                 <p className="text-sm text-base-content/60 mb-4">
-                  Member since {user.joinDate}
+                  Member since {getFormattedDate()}
                 </p>
                 <p className="text-base-content/80 max-w-md">{user.bio}</p>
 
@@ -200,25 +220,13 @@ export default function Profile() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
           <div className="stat bg-base-200 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <div className="stat-figure text-primary">
               <BookOpen className="h-8 w-8" />
             </div>
             <div className="stat-title text-base-content/70">Total Notes</div>
-            <div className="stat-value text-primary">
-              {user.stats.totalNotes}
-            </div>
-          </div>
-
-          <div className="stat bg-base-200 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <div className="stat-figure text-secondary">
-              <Star className="h-8 w-8" />
-            </div>
-            <div className="stat-title text-base-content/70">Favorites</div>
-            <div className="stat-value text-secondary">
-              {user.stats.favoriteNotes}
-            </div>
+            <div className="stat-value text-primary">{notes.length || 0}</div>
           </div>
 
           <div className="stat bg-base-200 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -227,17 +235,7 @@ export default function Profile() {
             </div>
             <div className="stat-title text-base-content/70">This Month</div>
             <div className="stat-value text-accent">
-              {user.stats.notesThisMonth}
-            </div>
-          </div>
-
-          <div className="stat bg-base-200 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-            <div className="stat-figure text-warning">
-              <span className="text-2xl">🔥</span>
-            </div>
-            <div className="stat-title text-base-content/70">Streak</div>
-            <div className="stat-value text-warning">
-              {user.stats.streakDays} days
+              {getNotesThisMonth() || 0}
             </div>
           </div>
         </div>
@@ -277,11 +275,17 @@ export default function Profile() {
                       Quick Actions
                     </h3>
                     <div className="space-y-2">
-                      <button className="btn btn-primary btn-sm w-full">
+                      <button
+                        onClick={() => navigate("/save")}
+                        className="btn btn-primary btn-sm w-full"
+                      >
                         <Edit3 className="h-4 w-4 mr-2" />
                         New Note
                       </button>
-                      <button className="btn btn-outline btn-sm w-full">
+                      <button
+                        onClick={() => navigate("/notes")}
+                        className="btn btn-outline btn-sm w-full"
+                      >
                         <BookOpen className="h-4 w-4 mr-2" />
                         Browse All Notes
                       </button>
@@ -333,62 +337,6 @@ export default function Profile() {
                 </div>
               </div>
             </>
-          )}
-
-          {activeTab === "recent" && (
-            <div className="col-span-1 lg:col-span-3">
-              <div className="space-y-4">
-                {recentNotes.map((note) => (
-                  <div
-                    key={note.id}
-                    className="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-                  >
-                    <div className="card-body">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h3 className="card-title text-base-content">
-                            {note.title}
-                          </h3>
-                          <p className="text-base-content/70 text-sm mb-2">
-                            {note.date}
-                          </p>
-                          <p className="text-base-content/60">{note.preview}</p>
-                        </div>
-                        <div className="dropdown dropdown-end">
-                          <div
-                            tabIndex={0}
-                            role="button"
-                            className="btn btn-ghost btn-sm"
-                            aria-label="Note options"
-                          >
-                            ⋯
-                          </div>
-                          <ul
-                            tabIndex={0}
-                            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-[1]"
-                          >
-                            <li>
-                              <a>Edit Note</a>
-                            </li>
-                            <li>
-                              <a>Share Note</a>
-                            </li>
-                            <li>
-                              <a>Delete Note</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="text-center mt-6">
-                  <button className="btn btn-outline btn-primary">
-                    View All Recent Notes
-                  </button>
-                </div>
-              </div>
-            </div>
           )}
 
           {activeTab === "achievements" && (
@@ -462,8 +410,12 @@ export default function Profile() {
                     <h3 className="card-title text-base-content mb-4">
                       Account Actions
                     </h3>
-                    <button className="btn btn-warning w-full mb-2">
-                      Change Email Address
+                    <button
+                      className="btn btn-primary w-full mb-2"
+                      onClick={handleChangePassword}
+                    >
+                      <Lock className="h-4 w-4 mr-2" />
+                      Change Password
                     </button>
                     <button className="btn btn-error w-full">
                       Delete Account
@@ -494,6 +446,32 @@ export default function Profile() {
             </div>
 
             <div className="space-y-4">
+              {/* Avatar Section */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base-content">
+                    Profile Picture
+                  </span>
+                </label>
+                <div className="flex items-center gap-4">
+                  <div className="avatar">
+                    <div className="w-20 h-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                      <img src={editForm.avatar} alt="Avatar preview" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      onClick={generateRandomAvatar}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Generate Random
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Name Field */}
               <div className="form-control">
                 <label className="label">
@@ -511,76 +489,18 @@ export default function Profile() {
                 />
               </div>
 
-              {/* Email Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-base-content">
-                    Email Address
-                  </span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={editForm.email}
-                  onChange={handleInputChange}
-                  className="input input-bordered w-full"
-                  placeholder="Enter your email address"
-                />
-              </div>
-
               {/* Bio Field */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text text-base-content">Bio</span>
+                  <span className="label-text text-base-content mx-2">Bio</span>
                 </label>
                 <textarea
                   name="bio"
                   value={editForm.bio}
                   onChange={handleInputChange}
-                  className="textarea textarea-bordered h-24"
+                  className="textarea textarea-bordered h-24 w-full"
                   placeholder="Tell others about yourself..."
                 ></textarea>
-              </div>
-
-              {/* Hobbies/Interests Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-base-content">
-                    Interests & Hobbies
-                  </span>
-                </label>
-                <div className="space-y-2">
-                  {editForm.hobbies.map((hobby, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        type="text"
-                        value={hobby}
-                        onChange={(e) =>
-                          handleHobbyChange(index, e.target.value)
-                        }
-                        className="input input-bordered flex-1"
-                        placeholder="Enter a hobby or interest"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeHobby(index)}
-                        className="btn btn-outline btn-error btn-sm"
-                        aria-label="Remove hobby"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                  {editForm.hobbies.length < 10 && (
-                    <button
-                      type="button"
-                      onClick={addHobby}
-                      className="btn btn-outline btn-sm"
-                    >
-                      + Add Interest
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
 
