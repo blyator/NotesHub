@@ -69,8 +69,28 @@ export function NotesProvider({ children }) {
         return res.json();
       })
       .then((createdNote) => {
-        setNotes((prevNotes) => [createdNote, ...prevNotes]);
+        if (newNote.tag_ids && newNote.tag_ids.length > 0) {
+          const addTagPromises = newNote.tag_ids.map((tagId) =>
+            fetch(`${API_BASE_URL}/notes/${createdNote.id}/tags`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ tag_id: tagId }),
+            })
+          );
+          return Promise.all(addTagPromises).then(() => createdNote);
+        }
         return createdNote;
+      })
+      .then((createdNote) => {
+        fetchNotes();
+        return createdNote;
+      })
+      .catch((err) => {
+        toast.error("Failed to create note");
+        throw err;
       });
   };
 
@@ -126,9 +146,9 @@ export function NotesProvider({ children }) {
       .then(() => {
         setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
       })
-      .catch((error) => {
-        toast.error("Failed to delete note.");
-        throw error;
+      .catch((err) => {
+        toast.error("Failed to delete note");
+        throw err;
       });
   };
 

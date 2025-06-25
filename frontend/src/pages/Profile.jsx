@@ -3,10 +3,12 @@ import { Edit3, BookOpen, Calendar, X, Save, Lock, Camera } from "lucide-react";
 import { UserContext } from "../context/UserContext";
 import { NotesContext } from "../context/NotesContext";
 import { useNavigate } from "react-router-dom";
+import SaveNotes from "./SaveNotes.jsx";
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const { currentUser } = useContext(UserContext);
   const { notes } = useContext(NotesContext);
@@ -15,7 +17,6 @@ export default function Profile() {
   // Form state for editing profile
   const [editForm, setEditForm] = useState({
     name: "",
-    email: "",
     bio: "",
     avatar: "",
   });
@@ -155,33 +156,48 @@ export default function Profile() {
       <div className="container mx-auto p-4 py-2 max-w-6xl">
         {/* Profile Header Card */}
         <div className="card bg-base-200 shadow-lg mb-6">
-          <div className="tabs tabs-boxed bg-base-200 mb-6 rounded-lg shadow-md">
-            <button
-              role="tab"
-              className={`tab ${activeTab === "overview" ? "tab-active" : ""}`}
-              onClick={() => setActiveTab("overview")}
-              aria-label="Overview Tab"
-            >
-              Overview
-            </button>
+          <div className="flex items-center justify-between tabs tabs-boxed bg-base-200 mb-6 rounded-lg shadow-md">
+            <div className="flex">
+              <button
+                role="tab"
+                className={`tab ${
+                  activeTab === "overview" ? "tab-active" : ""
+                }`}
+                onClick={() => setActiveTab("overview")}
+                aria-label="Overview Tab"
+              >
+                Overview
+              </button>
 
+              <button
+                role="tab"
+                className={`tab ${
+                  activeTab === "achievements" ? "tab-active" : ""
+                }`}
+                onClick={() => setActiveTab("achievements")}
+                aria-label="Achievements Tab"
+              >
+                Achievements
+              </button>
+              <button
+                role="tab"
+                className={`tab ${
+                  activeTab === "settings" ? "tab-active" : ""
+                }`}
+                onClick={() => setActiveTab("settings")}
+                aria-label="Account & Settings Tab"
+              >
+                Account & Settings
+              </button>
+            </div>
+
+            {/* Close Button */}
             <button
-              role="tab"
-              className={`tab ${
-                activeTab === "achievements" ? "tab-active" : ""
-              }`}
-              onClick={() => setActiveTab("achievements")}
-              aria-label="Achievements Tab"
+              className="btn btn-sm btn-circle btn-error ml-2"
+              onClick={() => navigate("/notes")}
+              aria-label="Close Profile"
             >
-              Achievements
-            </button>
-            <button
-              role="tab"
-              className={`tab ${activeTab === "settings" ? "tab-active" : ""}`}
-              onClick={() => setActiveTab("settings")}
-              aria-label="Account & Settings Tab"
-            >
-              Account & Settings
+              <X className="h-4 w-4" />
             </button>
           </div>
           <div className="card-body">
@@ -240,8 +256,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Tabs for Navigation */}
-
         {/* Dynamic Tab Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {activeTab === "overview" && (
@@ -266,7 +280,7 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Quick Actions & Categories & Account Overview & Interests */}
+              {/* Quick Actions & Categories & Account Overview */}
               <div className="space-y-4">
                 {/* Quick Actions Card */}
                 <div className="card bg-base-200 shadow-lg">
@@ -276,7 +290,7 @@ export default function Profile() {
                     </h3>
                     <div className="space-y-2">
                       <button
-                        onClick={() => navigate("/save")}
+                        onClick={() => setShowSaveModal(true)}
                         className="btn btn-primary btn-sm w-full"
                       >
                         <Edit3 className="h-4 w-4 mr-2" />
@@ -517,6 +531,8 @@ export default function Profile() {
           </div>
         </div>
       )}
+
+      {showSaveModal && <SaveNotes setShowSaveModal={setShowSaveModal} />}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App";
 import { UserProvider } from "./context/UserContext";
 import { NotesProvider } from "./context/NotesContext";
+import { TagsProvider } from "./context/TagsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -12,7 +13,9 @@ root.render(
     <BrowserRouter>
       <NotesProvider>
         <UserProvider>
-          <App />
+          <TagsProvider>
+            <App />
+          </TagsProvider>
         </UserProvider>
       </NotesProvider>
     </BrowserRouter>

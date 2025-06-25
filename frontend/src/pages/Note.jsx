@@ -34,13 +34,13 @@ export default function Note({
   const handleCardClick = (e) => {
     const selection = window.getSelection();
     if (selection.toString().trim() !== "") return;
-
     if (!isMobile || !isActive) {
       setSelectedNoteId(note.id);
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
     setOpen(true);
   };
 
@@ -50,7 +50,7 @@ export default function Note({
       const parsedDate = new Date(date);
       if (isNaN(parsedDate.getTime())) return "Unknown Date";
       return parsedDate.toLocaleDateString("en-UK", {
-        month: "long",
+        month: "short",
         day: "numeric",
         year: "numeric",
       });
@@ -69,26 +69,64 @@ export default function Note({
   return (
     <>
       <div
-        className="card bg-base-100 shadow-md w-full hover:bg-base-200 group cursor-pointer"
+        className="card bg-base-100 shadow-md w-full hover:bg-base-200 group cursor-pointer transition-all duration-200"
         onClick={handleCardClick}
         onTouchStart={handleTouchStart}
         role="button"
         aria-label={`Edit note: ${note.title}`}
       >
         <div className="card-body p-4">
-          <h2 className="card-title text-xl text-base-content">{note.title}</h2>
-          <ul className="list-disc list-inside mt-2">
-            {Array.isArray(note.notes) &&
-              note.notes.map((item, index) => (
-                <li key={index} className="text-base-content/80">
-                  {item}
-                </li>
-              ))}
+          <h2 className="card-title text-lg text-base-content line-clamp-1">
+            {note.title}
+          </h2>
+          <ul className="list-disc list-inside mt-1 space-y-1">
+            {Array.isArray(note.notes)
+              ? note.notes.slice(0, 3).map((item, index) => (
+                  <li
+                    key={index}
+                    className="text-sm text-base-content/80 line-clamp-1"
+                  >
+                    {item}
+                  </li>
+                ))
+              : null}
+            {note.notes?.length > 3 && (
+              <li className="text-xs text-base-content/60">
+                +{note.notes.length - 3} more
+              </li>
+            )}
           </ul>
         </div>
 
+        {/* Tags Below Note */}
+        {note.tags && note.tags.length > 0 && (
+          <div className="px-4 pb-3 flex flex-wrap gap-2">
+            {note.tags.map((tag) => {
+              const badgeColors = [
+                "badge-primary",
+                "badge-secondary",
+                "badge-accent",
+                "badge-info",
+                "badge-success",
+                "badge-warning",
+                "badge-error",
+              ];
+              const colorClass =
+                badgeColors[Math.floor(Math.random() * badgeColors.length)];
+              return (
+                <span
+                  key={tag.id || tag.name}
+                  className={`badge badge-sm ${colorClass} text-white font-medium`}
+                >
+                  {tag.name}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
         <div
-          className={`card-footer bg-primary/50 flex items-center justify-end gap-2 p-2 rounded-b-lg transition-opacity duration-200 ${
+          className={`card-footer bg-primary/5 flex items-center justify-between p-2 rounded-b-lg transition-opacity duration-200 ${
             isMobile
               ? isActive
                 ? "opacity-100"
@@ -96,31 +134,30 @@ export default function Note({
               : "opacity-0 group-hover:opacity-100"
           }`}
         >
-          <span className="text-xs text-primary-content">
-            {dateLabel}: {displayDate}
+          <span className="text-xs text-base-content/70">
+            {dateLabel} {displayDate}
           </span>
-          <button
-            className="btn btn-ghost btn-sm"
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedNoteId(note.id);
-            }}
-            aria-label="Edit note"
-          >
-            <PencilSquareIcon className="w-4 h-4 fill-primary-content" />
-          </button>
-          <button
-            className="btn btn-ghost btn-sm"
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteClick();
-            }}
-            aria-label="Delete note"
-          >
-            <TrashIcon className="w-4 h-4 fill-secondary-content" />
-          </button>
+          <div className="flex gap-1">
+            <button
+              className="btn btn-ghost btn-xs px-2"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedNoteId(note.id);
+              }}
+              aria-label="Edit note"
+            >
+              <PencilSquareIcon className="w-3.5 h-3.5" />
+            </button>
+            <button
+              className="btn btn-ghost btn-xs px-2 text-error/80 hover:text-error"
+              type="button"
+              onClick={handleDeleteClick}
+              aria-label="Delete note"
+            >
+              <TrashIcon className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 

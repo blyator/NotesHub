@@ -1,19 +1,19 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import Note from "../pages/Note.jsx";
 import { NotesContext } from "../context/NotesContext";
 import WelcomeMsg from "../components/WelcomeMsg.jsx";
 import { CircleX } from "lucide-react";
+import SaveNotes from "../pages/SaveNotes.jsx";
+import Note from "../pages/Note.jsx";
 
 export default function NoteList({ setSelectedNoteId }) {
-  const navigate = useNavigate();
   const [activeNoteId, setActiveNoteId] = useState(null);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const { filteredNotes, handleDelete, handleUpdate, search } =
     useContext(NotesContext);
 
   const handleAddNote = () => {
-    navigate("/save");
+    setShowSaveModal(true);
   };
 
   return (
@@ -98,6 +98,8 @@ export default function NoteList({ setSelectedNoteId }) {
           />
         </svg>
       </button>
+
+      {showSaveModal && <SaveNotes setShowSaveModal={setShowSaveModal} />}
     </div>
   );
 }
