@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@tiptap/react": "^2.22.3",
-    "@tiptap/starter-kit": "^2.22.3"
-  }
-}
