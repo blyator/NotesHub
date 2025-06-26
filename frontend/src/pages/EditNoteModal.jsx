@@ -132,7 +132,7 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
         ...toRemove.map((id) => removeTagFromNote(selectedNoteId, id)),
       ]);
 
-      fetchNotes(); 
+      fetchNotes();
       handleClose();
     } catch (err) {
       toast.error(`Failed to save note`);
@@ -199,7 +199,7 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
                       key={name}
                       className={`badge badge-sm ${getRandomBadgeClass(
                         name
-                      )} text-white`}
+                      )} text-primary-content`}
                     >
                       {name}
                     </span>

@@ -18,24 +18,13 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!name.trim()) {
-      toast("Enter your name", {
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
-      });
+      toast.error("Enter your name");
       return;
     }
 
     if (password !== confirmPassword) {
       toast("passwords do not match", {
         icon: "🔒",
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
       });
       return;
     }
@@ -43,11 +32,6 @@ const SignUp = () => {
     if (password.length < 6) {
       toast("Password too short", {
         icon: "🔒",
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
       });
 
       return;
@@ -62,11 +46,6 @@ const SignUp = () => {
           error: (err) => err.message || "Registration failed",
         },
         {
-          style: {
-            borderRadius: "10px",
-            background: "#5C3A21",
-            color: "#fff",
-          },
           duration: 5000,
         }
       )
@@ -75,7 +54,7 @@ const SignUp = () => {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        navigate("/login");
+        navigate("/notes");
       })
       .catch(() => {});
   };

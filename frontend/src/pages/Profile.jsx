@@ -320,7 +320,10 @@ export default function Profile() {
             {/* Close Button */}
             <button
               className="btn btn-sm btn-circle btn-error ml-2"
-              onClick={() => navigate("/notes")}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/notes");
+              }}
               aria-label="Close Profile"
             >
               <X className="h-4 w-4" />
@@ -397,8 +400,7 @@ export default function Profile() {
                       <div className="text-center">
                         <div className="text-4xl mb-2">📊</div>
                         <p className="text-base-content/60">
-                          Activity chart would go here (e.g., using Recharts,
-                          D3.js)
+                          Your writing activity will appear here.
                         </p>
                       </div>
                     </div>
@@ -407,7 +409,13 @@ export default function Profile() {
               </div>
 
               {/* Quick Actions & Categories & Account Overview */}
-              <div className="space-y-4">
+              <div
+                className={`space-y-4 ${
+                  currentUser?.is_admin
+                    ? "opacity-25 pointer-events-none cursor-not-allowed"
+                    : ""
+                }`}
+              >
                 {/* Quick Actions Card */}
                 <div className="card bg-base-200 shadow-lg">
                   <div className="card-body">
@@ -434,10 +442,16 @@ export default function Profile() {
                 </div>
 
                 {/* Categories Card */}
-                <div className="card bg-base-200 shadow-lg">
+                <div
+                  className={`card bg-base-200 shadow-lg ${
+                    currentUser?.is_admin
+                      ? "opacity-50 pointer-events-none cursor-not-allowed"
+                      : ""
+                  }`}
+                >
                   <div className="card-body">
                     <h3 className="card-title text-base-content mb-4">
-                      Categories
+                      Your Tags
                     </h3>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer">
@@ -445,7 +459,7 @@ export default function Profile() {
                           Work
                         </span>
                         <span className="text-sm text-base-content/70">
-                          124 notes
+                          0 notes
                         </span>
                       </div>
                       <div className="flex justify-between items-center p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer">
@@ -453,7 +467,7 @@ export default function Profile() {
                           Personal
                         </span>
                         <span className="text-sm text-base-content/70">
-                          89 notes
+                          0 notes
                         </span>
                       </div>
                       <div className="flex justify-between items-center p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer">
@@ -461,7 +475,7 @@ export default function Profile() {
                           Ideas
                         </span>
                         <span className="text-sm text-base-content/70">
-                          67 notes
+                          0 notes
                         </span>
                       </div>
                       <div className="flex justify-between items-center p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer">
@@ -469,7 +483,7 @@ export default function Profile() {
                           Learning
                         </span>
                         <span className="text-sm text-base-content/70">
-                          45 notes
+                          0 notes
                         </span>
                       </div>
                     </div>
@@ -480,7 +494,7 @@ export default function Profile() {
           )}
 
           {activeTab === "achievements" && (
-            <div className="col-span-1 lg:col-span-3">
+            <div className="col-span-1 lg:col-span-3 opacity-40 pointer-events-none">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {achievements.map((achievement, index) => (
                   <div
@@ -500,7 +514,7 @@ export default function Profile() {
                           <span
                             className={`badge ${achievement.badgeColor} badge-outline`}
                           >
-                            Unlocked
+                            Locked
                           </span>
                         </div>
                       )}
@@ -558,8 +572,9 @@ export default function Profile() {
                       Change Password
                     </button>
                     <button
+                      className="btn w-full btn-error disabled:opacity disabled:cursor-not-allowed"
+                      disabled={currentUser?.is_admin}
                       onClick={() => setIsDeleteModalOpen(true)}
-                      className="btn btn-error w-full"
                     >
                       Delete Account
                     </button>
@@ -669,13 +684,6 @@ export default function Profile() {
               <h3 className="font-bold text-lg text-base-content">
                 Change Password
               </h3>
-              <button
-                className="btn btn-sm btn-circle btn-ghost"
-                onClick={closePasswordModal}
-                aria-label="Close modal"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
 
             <div className="space-y-4">

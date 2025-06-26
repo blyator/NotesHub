@@ -1,14 +1,9 @@
-import toast from "react-hot-toast";
+import React from "react";
 
 export default function DeletePopUp({ open, setOpen, noteId, onDelete }) {
   const handleDelete = () => {
     onDelete(noteId);
     setOpen(false);
-    toast.custom(
-      <div role="alert" className="alert alert-error alert-soft">
-        <span> Moved to trash🗑️</span>
-      </div>
-    );
     return;
   };
 

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NotesContext } from "./NotesContext";
+import toast from "react-hot-toast";
 
 export const UserContext = createContext();
 
@@ -31,9 +32,19 @@ export const UserProvider = ({ children }) => {
     if (!response.ok) {
       throw new Error(data.error);
     }
+
+    if (data.success) {
+      try {
+        const loginData = await login_user(email, password);
+        localStorage.setItem("showWelcomeMsg", "true");
+        return loginData;
+      } catch (loginError) {
+        throw new Error("Account created. Please login.");
+      }
+    }
+
     return data;
   }
-
   //*****************login a user ********************
 
   const login_user = async (email, password) => {
@@ -54,6 +65,7 @@ export const UserProvider = ({ children }) => {
 
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
+
         setAuthToken(data.access_token);
 
         return data;
@@ -85,22 +97,42 @@ export const UserProvider = ({ children }) => {
   //***************logout a user *****************
 
   function logout_user() {
-    fetch(`${API_BASE_URL}/logout`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${auth_token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.success) {
+    toast
+      .promise(
+        (async () => {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          const response = await fetch(`${API_BASE_URL}/logout`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${auth_token}`,
+            },
+          });
+
+          const res = await response.json();
+
+          if (!res.success) {
+            throw new Error(res.message || "Logout failed");
+          }
+
           localStorage.removeItem("access_token");
           localStorage.removeItem("showWelcomeMsg");
           setAuthToken(null);
           setCurrentUser(null);
           setNotes([]);
-          navigate("/login");
+
+          return res;
+        })(),
+        {
+          loading: "Logging out...",
+          error: (err) => err.message || "Logout failed",
         }
+      )
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
       });
   }
 

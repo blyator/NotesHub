@@ -61,7 +61,7 @@ export default function NoteList({ setSelectedNoteId }) {
               strokeWidth={2.25}
               className="mr-2"
             />
-            Nope, we couldn't find match.
+            Nope, we couldn't find a match.
           </div>
         ) : (
           <div className="flex items-center justify-center h-[60vh] text-base-content/80 text-center">

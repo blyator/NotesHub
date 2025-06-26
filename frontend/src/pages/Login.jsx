@@ -43,51 +43,32 @@ const Login = () => {
     e.preventDefault();
 
     if (!email.trim() || !email.includes("@")) {
-      toast("Please enter a valid email", {
-        icon: "📧",
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
-      });
+      toast.error("Please enter a valid email");
       return;
     }
 
     if (password.length < 6) {
-      toast("Password too short", {
-        icon: "🔒",
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
-      });
+      toast.error("Password too short");
       return;
     }
 
     toast
       .promise(
-        login_user(email, password),
+        (async () => {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          const res = await login_user(email, password);
+          localStorage.setItem("showWelcomeMsg", "true");
+          await fetchCurrentUser();
+          await fetchNotes();
+          return res;
+        })(),
         {
           loading: "Please wait...",
           error: (err) => err.message || "Login failed",
-        },
-        {
-          style: {
-            borderRadius: "10px",
-            background: "#5C3A21",
-            color: "#fff",
-          },
-          duration: 1500,
         }
       )
       .then((res) => {
-        localStorage.setItem("showWelcomeMsg", "true");
-        fetchCurrentUser();
-        fetchNotes();
-
-        if (res && res.user && res.user.is_admin) {
+        if (res?.user?.is_admin) {
           navigate("/admin");
         } else {
           navigate("/notes");

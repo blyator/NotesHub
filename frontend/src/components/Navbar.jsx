@@ -153,9 +153,9 @@ export default function Navbar() {
               </li>
               <li>
                 <a
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     logout_user();
-                    navigate("/login");
                   }}
                 >
                   Logout
