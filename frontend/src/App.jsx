@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import NoteList from "./pages/NoteList.jsx";
 import SaveNotes from "./pages/SaveNotes.jsx";
 import EditNoteModal from "./pages/EditNoteModal.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 import { useState, useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login.jsx";
@@ -37,7 +38,6 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-
         <Route
           element={
             currentUser ? (
@@ -54,7 +54,9 @@ export default function App() {
           />
           <Route path="/save" element={<SaveNotes />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Route>
+
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
 

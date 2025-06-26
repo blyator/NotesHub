@@ -4,6 +4,8 @@ from flask_mail import Message
 from views.mailserver import send_email
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 users_bp = Blueprint("users_bp", __name__)
 
@@ -86,3 +88,30 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return jsonify({"success": "User deleted"}), 200
+
+
+@users_bp.route("/users/<int:user_id>/change_password", methods=["PATCH"])
+@jwt_required()
+def change_password(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    current_user_id = get_jwt_identity()
+    if user.id != current_user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    data = request.get_json()
+    current_password = data.get("current_password")
+    new_password = data.get("new_password")
+
+    if not current_password or not new_password:
+        return jsonify({"error": "Current and new password are required"}), 400
+
+    if not check_password_hash(user.password, current_password):
+        return jsonify({"error": "Current password is incorrect"}), 400
+
+    user.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"success": "Password updated"}), 200

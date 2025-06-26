@@ -98,7 +98,6 @@ export default function Note({
           </ul>
         </div>
 
-        {/* Tags Below Note */}
         {note.tags && note.tags.length > 0 && (
           <div className="px-4 pb-3 flex flex-wrap gap-2">
             {note.tags.map((tag) => {

@@ -29,34 +29,39 @@ export const UserProvider = ({ children }) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Registration failed");
+      throw new Error(data.error);
     }
     return data;
   }
 
   //*****************login a user ********************
 
-  async function login_user(email, password) {
-    return fetch(`${API_BASE_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    }).then(async (response) => {
-      const res = await response.json();
+  const login_user = async (email, password) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (!response.ok || res.error) {
-        throw new Error(res.msg || res.error || "Login failed");
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || "Login failed");
       }
 
-      if (res.access_token) {
-        localStorage.setItem("access_token", res.access_token);
-        setAuthToken(res.access_token);
-        return res;
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+        setAuthToken(data.access_token);
+
+        return data;
       }
-    });
-  }
+    } catch (error) {
+      throw error;
+    }
+  };
 
   //**************fetch current user *****************
 

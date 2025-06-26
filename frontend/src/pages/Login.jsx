@@ -16,11 +16,18 @@ const Login = () => {
   const { fetchNotes } = useContext(NotesContext);
 
   //****************** Prevent flash on redirect ******************
+
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
+
   useEffect(() => {
-    if (currentUser && auth_token) {
-      navigate("/notes", { replace: true });
+    if (currentUser && auth_token && !justLoggedIn) {
+      if (currentUser.is_admin) {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/notes", { replace: true });
+      }
     }
-  }, [currentUser, auth_token, navigate]);
+  }, [currentUser, auth_token, navigate, justLoggedIn]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -75,22 +82,28 @@ const Login = () => {
           duration: 1500,
         }
       )
-      .then(() => {
+      .then((res) => {
         localStorage.setItem("showWelcomeMsg", "true");
         fetchCurrentUser();
         fetchNotes();
-        navigate("/notes");
+
+        if (res && res.user && res.user.is_admin) {
+          navigate("/admin");
+        } else {
+          navigate("/notes");
+        }
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
       });
   };
 
   const handleGoogleAuth = () => {
-    // Implement Google authentication logic here
-    console.log("Google authentication not implemented yet.");
+    // Google authentication logic
   };
 
   const handleAppleAuth = () => {
-    // Implement Apple authentication logic here
-    console.log("Apple authentication not implemented yet.");
+    // Apple authentication logic
   };
 
   return (

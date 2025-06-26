@@ -1,14 +1,56 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { toast } from "react-hot-toast";
+import { UserContext } from "../context/UserContext";
+
+const getTimeBasedGreeting = () => {
+  const hour = new Date().getHours();
+
+  if (hour >= 5 && hour < 12) {
+    return "Good morning";
+  } else if (hour >= 12 && hour < 17) {
+    return "Good afternoon";
+  } else if (hour >= 17 && hour < 22) {
+    return "Good evening";
+  } else {
+    return "Good night";
+  }
+};
+
+const getRandomLoginMessage = () => {
+  const messages = [
+    "Welcome back!",
+    "Great to see you again!",
+    "You're all set to go!",
+    "Welcome! Let's make today productive.",
+    "Good to have you back!",
+    "Ready to dive in?",
+    "Welcome aboard!",
+    "Time to make things happen!",
+    "Let's get started!",
+    "Welcome back to your workspace!",
+    "Nice to see you again!",
+    "All systems ready!",
+    "Welcome! Hope you're having a great day.",
+    "Back in action!",
+    "Let's accomplish great things today!",
+  ];
+
+  return messages[Math.floor(Math.random() * messages.length)];
+};
 
 export default function WelcomeMsg() {
+  const { currentUser } = useContext(UserContext);
+
   useEffect(() => {
     const shouldShow = localStorage.getItem("showWelcomeMsg");
 
-    if (shouldShow === "true") {
+    if (shouldShow === "true" && currentUser) {
       toast.dismiss();
 
       const timer = setTimeout(() => {
+        const greeting = getTimeBasedGreeting();
+        const randomMessage = getRandomLoginMessage();
+
         toast.custom(
           (t) => (
             <div
@@ -27,26 +69,18 @@ export default function WelcomeMsg() {
                   </div>
                   <div className="ml-3 flex-1">
                     <p className="text-sm font-medium text-base-content">
-                      Welcome back!
+                      {greeting}, {currentUser?.name?.split(" ")[0]}!
                     </p>
                     <p className="mt-1 text-sm text-base-content/70">
-                      Logged in
+                      {randomMessage}
                     </p>
                   </div>
                 </div>
               </div>
-              {/* <div className="flex border-l border-base-content/20">
-                <button
-                  onClick={() => toast.dismiss(t.id)}
-                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-primary hover:text-primary-focus focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  Close
-                </button>
-              </div> */}
             </div>
           ),
           {
-            duration: 3000,
+            duration: 9000,
             position: "top-right",
           }
         );
@@ -56,7 +90,7 @@ export default function WelcomeMsg() {
 
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [currentUser]);
 
   return null;
 }

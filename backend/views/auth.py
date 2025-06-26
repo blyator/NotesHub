@@ -40,7 +40,19 @@ def login():
 
     if user and check_password_hash(user.password, password):
         access_token = create_access_token(identity=user.id)
-        return jsonify(access_token=access_token)
+        
+        user_data = {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "is_admin": user.is_admin,
+            "created_at": user.created_at.isoformat() if user.created_at else None
+        }
+        
+        return jsonify(
+            access_token=access_token,
+            user=user_data
+        ), 200
 
     else:
         return jsonify({"error": "email or password is wrong"}), 400
@@ -68,7 +80,6 @@ def fetch_loggedin():
 
 
 
-
 @auth_bp.route("/logout", methods=["DELETE"])
 @jwt_required()
 def modify_token():
@@ -79,3 +90,33 @@ def modify_token():
     db.session.add(new_blocked_token)
     db.session.commit()
     return jsonify({"success": "Successfully logged out"}), 200
+
+
+
+@auth_bp.route("/admin/users", methods=["GET"])
+@jwt_required()
+def get_all_users():
+    current_user_id = get_jwt_identity()
+
+    current_user = User.query.get(current_user_id)
+    
+    if not current_user:
+        return jsonify({"error": "User not found"}), 404
+    
+    if not current_user.is_admin:
+        return jsonify({"error": "Access denied."}), 403
+    
+    users = User.query.all()
+    
+    users_data = []
+    for user in users:
+        user_data = {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "is_admin": user.is_admin,
+            "created_at": user.created_at.isoformat()
+        }
+        users_data.append(user_data)
+    
+    return jsonify(users_data), 200

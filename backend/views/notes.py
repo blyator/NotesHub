@@ -153,11 +153,11 @@ def add_tag_to_note(note_id):
 
     note = Note.query.get(note_id)
     if not note or note.user_id != current_user_id:
-        return jsonify({"error": "Note not found or unauthorized"}), 404
+        return jsonify({"error": "Note not foun"}), 404
 
     tag = Tag.query.get(tag_id)
     if not tag or tag.user_id != current_user_id:
-        return jsonify({"error": "Tag not found or unauthorized"}), 404
+        return jsonify({"error": "Tag not found"}), 404
 
     existing_relation = NoteTag.query.filter_by(note_id=note_id, tag_id=tag_id).first()
     if existing_relation:

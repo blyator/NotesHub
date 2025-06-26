@@ -1,9 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { NotesContext } from "../context/NotesContext";
 import WelcomeMsg from "../components/WelcomeMsg.jsx";
 import { CircleX } from "lucide-react";
 import SaveNotes from "../pages/SaveNotes.jsx";
 import Note from "../pages/Note.jsx";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext.jsx";
 
 export default function NoteList({ setSelectedNoteId }) {
   const [activeNoteId, setActiveNoteId] = useState(null);
@@ -11,6 +13,19 @@ export default function NoteList({ setSelectedNoteId }) {
 
   const { filteredNotes, handleDelete, handleUpdate, search } =
     useContext(NotesContext);
+
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser?.is_admin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  if (currentUser?.is_admin) {
+    return null;
+  }
 
   const handleAddNote = () => {
     setShowSaveModal(true);

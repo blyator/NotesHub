@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { NotesContext } from "../context/NotesContext";
 import { TagsContext } from "../context/TagsContext";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const badgeColors = [
   "badge-primary",
@@ -31,7 +33,20 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
   const { tags, fetchTags, createTag, addTagToNote, removeTagFromNote } =
     useContext(TagsContext);
 
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
   const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
+
+  useEffect(() => {
+    if (currentUser?.is_admin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  if (currentUser?.is_admin) {
+    return null;
+  }
 
   useEffect(() => {
     fetchTags();
@@ -86,15 +101,12 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
 
     try {
       setLoading(true);
-
-      // Update note content
       const notesArray = notes.split("\n");
       await handleUpdate(selectedNoteId, {
         title: title.trim(),
         notes: notesArray,
       });
 
-      // Process tags
       const trimmedTags = tagInput
         .split(",")
         .map((tag) => tag.trim())
@@ -104,7 +116,6 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
         trimmedTags.includes(tag.name)
       );
 
-      // Add new tags not in global list
       const newTagPromises = trimmedTags
         .filter((name) => !tags.find((t) => t.name === name))
         .map((name) => createTag(name));
@@ -113,7 +124,6 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
       const finalTagObjs = [...currentTagObjs, ...newTags];
       const finalTagIds = finalTagObjs.map((tag) => tag.id);
 
-      // Sync tags (add missing, remove removed)
       const toAdd = finalTagIds.filter((id) => !initialTagIds.includes(id));
       const toRemove = initialTagIds.filter((id) => !finalTagIds.includes(id));
 
@@ -122,11 +132,9 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
         ...toRemove.map((id) => removeTagFromNote(selectedNoteId, id)),
       ]);
 
-      fetchNotes(); // Refresh notes list
-      toast.success("Note updated");
+      fetchNotes(); 
       handleClose();
     } catch (err) {
-      console.error("Save error:", err);
       toast.error(`Failed to save note`);
     } finally {
       setLoading(false);

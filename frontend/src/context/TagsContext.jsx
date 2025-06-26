@@ -1,6 +1,5 @@
 import { createContext, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { NotesContext } from "./NotesContext";
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -93,7 +92,7 @@ export function TagsProvider({ children }) {
         return res.json();
       })
       .then(() => {
-        fetchNotes(); // Refresh notes to get updated tags
+        fetchNotes();
       });
   };
 
@@ -111,7 +110,7 @@ export function TagsProvider({ children }) {
         return res.json();
       })
       .then(() => {
-        fetchNotes(); // Refresh notes to get updated tags
+        fetchNotes();
       });
   };
 

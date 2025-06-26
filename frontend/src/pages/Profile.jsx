@@ -1,27 +1,46 @@
 import React, { useState, useContext } from "react";
-import { Edit3, BookOpen, Calendar, X, Save, Lock, Camera } from "lucide-react";
+import {
+  Edit3,
+  BookOpen,
+  Calendar,
+  X,
+  Save,
+  Lock,
+  Camera,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { UserContext } from "../context/UserContext";
 import { NotesContext } from "../context/NotesContext";
 import { useNavigate } from "react-router-dom";
 import SaveNotes from "./SaveNotes.jsx";
 
+const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const { currentUser } = useContext(UserContext);
   const { notes } = useContext(NotesContext);
   const navigate = useNavigate();
 
-  // Form state for editing profile
   const [editForm, setEditForm] = useState({
     name: "",
     bio: "",
     avatar: "",
   });
 
-  // Mock user data. In a real application, this data would come from an API or a global state manager.
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const [user, setUser] = useState({
     avatar: "https://picsum.photos/200/200?random=1",
     bio: "Passionate writer and creative thinker.",
@@ -56,7 +75,6 @@ export default function Profile() {
     }).length;
   };
 
-  // Open edit modal and populate form with current user data
   const openEditModal = () => {
     setEditForm({
       name: currentUser.name,
@@ -67,12 +85,25 @@ export default function Profile() {
     setIsEditModalOpen(true);
   };
 
-  // Close edit modal
   const closeEditModal = () => {
     setIsEditModalOpen(false);
   };
 
-  // Handle form input changes
+  const openPasswordModal = () => {
+    setPasswordForm({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    setIsPasswordModalOpen(true);
+  };
+
+  const closePasswordModal = () => {
+    setIsPasswordModalOpen(false);
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditForm((prev) => ({
@@ -81,7 +112,14 @@ export default function Profile() {
     }));
   };
 
-  // Generate a new random avatar
+  const handlePasswordInputChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const generateRandomAvatar = () => {
     const randomId = Math.floor(Math.random() * 1000);
     const newAvatar = `https://picsum.photos/200/200?random=${randomId}`;
@@ -91,7 +129,6 @@ export default function Profile() {
     }));
   };
 
-  // Save profile changes
   const saveProfile = () => {
     setUser((prev) => ({
       ...prev,
@@ -103,10 +140,50 @@ export default function Profile() {
     closeEditModal();
   };
 
-  // Handle change password
-  const handleChangePassword = () => {
-    // In a real app, this would open a password change modal or redirect to a password change page
-    alert("Change password functionality would be implemented here");
+  const handleChangePassword = async () => {
+    // Validation
+    if (
+      !passwordForm.currentPassword ||
+      !passwordForm.newPassword ||
+      !passwordForm.confirmPassword
+    ) {
+      alert("All fields are required.");
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert("New passwords do not match.");
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      alert("New password must be at least 6 characters long.");
+      return;
+    }
+
+    const token = localStorage.getItem("access_token");
+
+    try {
+      const res = await fetch(`${VITE_SERVER_URL}/users/change_password`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          current_password: passwordForm.currentPassword,
+          new_password: passwordForm.newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to change password");
+
+      alert("Password changed successfully.");
+      closePasswordModal();
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
   };
 
   // Mock data for user achievements
@@ -426,7 +503,7 @@ export default function Profile() {
                     </h3>
                     <button
                       className="btn btn-primary w-full mb-2"
-                      onClick={handleChangePassword}
+                      onClick={openPasswordModal}
                     >
                       <Lock className="h-4 w-4 mr-2" />
                       Change Password
@@ -526,6 +603,129 @@ export default function Profile() {
               <button className="btn btn-primary" onClick={saveProfile}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {isPasswordModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box w-11/12 max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-lg text-base-content">
+                Change Password
+              </h3>
+              <button
+                className="btn btn-sm btn-circle btn-ghost"
+                onClick={closePasswordModal}
+                aria-label="Close modal"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Current Password Field */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base-content">
+                    Current Password
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    name="currentPassword"
+                    value={passwordForm.currentPassword}
+                    onChange={handlePasswordInputChange}
+                    className="input input-bordered w-full pr-12"
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  >
+                    {showCurrentPassword ? (
+                      <EyeOff className="h-4 w-4 text-base-content/60" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-base-content/60" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* New Password Field */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base-content">
+                    New Password
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    name="newPassword"
+                    value={passwordForm.newPassword}
+                    onChange={handlePasswordInputChange}
+                    className="input input-bordered w-full pr-12"
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="h-4 w-4 text-base-content/60" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-base-content/60" />
+                    )}
+                  </button>
+                </div>
+                <label className="label">
+                  <span className="label-text-alt text-base-content/60">
+                    At least 6 characters
+                  </span>
+                </label>
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base-content">
+                    Confirm New Password
+                  </span>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={passwordForm.confirmPassword}
+                  onChange={handlePasswordInputChange}
+                  className="input input-bordered w-full"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="modal-action">
+              <button className="btn btn-ghost" onClick={closePasswordModal}>
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleChangePassword}
+                disabled={
+                  !passwordForm.currentPassword ||
+                  !passwordForm.newPassword ||
+                  !passwordForm.confirmPassword
+                }
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Change Password
               </button>
             </div>
           </div>

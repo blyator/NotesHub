@@ -149,9 +149,6 @@ export default function Navbar() {
                 </a>
               </li>
               <li>
-                <a className="justify-between">Settings</a>
-              </li>
-              <li>
                 <a>Trash</a>
               </li>
               <li>

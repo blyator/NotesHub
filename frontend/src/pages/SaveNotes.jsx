@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { NotesContext } from "../context/NotesContext";
 import { TagsContext } from "../context/TagsContext";
-import { X } from "lucide-react";
+import { UserContext } from "../context/UserContext.jsx";
 
 const badgeColors = [
   "badge-primary",
@@ -32,6 +32,17 @@ export default function SaveNotes({ setShowSaveModal }) {
   const [newTagName, setNewTagName] = useState("");
   const [inputTagNames, setInputTagNames] = useState([]);
   const navigate = useNavigate();
+  const { currentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    if (currentUser?.is_admin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  if (currentUser?.is_admin) {
+    return null;
+  }
 
   useEffect(() => {
     fetchTags();
