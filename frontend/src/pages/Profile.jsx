@@ -14,6 +14,7 @@ import { UserContext } from "../context/UserContext";
 import { NotesContext } from "../context/NotesContext";
 import { useNavigate } from "react-router-dom";
 import SaveNotes from "./SaveNotes.jsx";
+import { toast } from "react-hot-toast";
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -24,6 +25,9 @@ export default function Profile() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   const { currentUser } = useContext(UserContext);
   const { notes } = useContext(NotesContext);
@@ -164,7 +168,7 @@ export default function Profile() {
     const token = localStorage.getItem("access_token");
 
     try {
-      const res = await fetch(`${VITE_SERVER_URL}/users/change_password`, {
+      const res = await fetch(`${VITE_SERVER_URL}/change_password`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -184,6 +188,51 @@ export default function Profile() {
     } catch (err) {
       alert("Error: " + err.message);
     }
+  };
+
+  const handleDeleteAccount = () => {
+    toast.promise(
+      (async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const token = localStorage.getItem("access_token");
+        const response = await fetch(
+          `${VITE_SERVER_URL}/users/${currentUser.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to delete account");
+        }
+
+        localStorage.removeItem("access_token");
+        return response;
+      })(),
+      {
+        loading: "Deleting your account...",
+        success: () => {
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1500);
+          return "Account deleted!";
+        },
+        error: (err) => err.message || "Could not delete account",
+      },
+      {
+        style: {
+          borderRadius: "10px",
+          background: "#5C3A21",
+          color: "#fff",
+        },
+        duration: 2000,
+      }
+    );
   };
 
   // Mock data for user achievements
@@ -508,7 +557,10 @@ export default function Profile() {
                       <Lock className="h-4 w-4 mr-2" />
                       Change Password
                     </button>
-                    <button className="btn btn-error w-full">
+                    <button
+                      onClick={() => setIsDeleteModalOpen(true)}
+                      className="btn btn-error w-full"
+                    >
                       Delete Account
                     </button>
                   </div>
@@ -726,6 +778,58 @@ export default function Profile() {
               >
                 <Lock className="h-4 w-4 mr-2" />
                 Change Password
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-error">Delete Account</h3>
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="btn btn-sm btn-circle btn-ghost"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <p className="py-4">
+              Are you sure you want to permanently delete your account? This
+              action cannot be undone and all your data will be lost.
+            </p>
+
+            {deleteError && (
+              <div className="alert alert-error mb-4">
+                <span>{deleteError}</span>
+              </div>
+            )}
+
+            <div className="modal-action">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="btn btn-ghost"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                className="btn btn-error"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Deleting...
+                  </>
+                ) : (
+                  "Confirm Delete"
+                )}
               </button>
             </div>
           </div>

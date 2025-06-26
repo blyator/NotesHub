@@ -33,6 +33,13 @@ export default function App() {
         toastOptions={{
           duration: 2000,
           removeDelay: 1000,
+          style: {
+            border: "1px solid #292929",
+            padding: "10px",
+            color: "#FFFAEE",
+            background: "#292929",
+            borderRadius: "15px",
+          },
         }}
       />
       <Routes>

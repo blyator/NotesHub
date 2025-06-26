@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, User
+from models import Note, Tag, db, User
 from flask_mail import Message
 from views.mailserver import send_email
 from werkzeug.security import generate_password_hash
@@ -81,25 +81,35 @@ def update_user(user_id):
 @users_bp.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"success": "User deleted"}), 200
-
-
-@users_bp.route("/users/<int:user_id>/change_password", methods=["PATCH"])
-@jwt_required()
-def change_password(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
     current_user_id = get_jwt_identity()
-    if user.id != current_user_id:
+    if current_user_id != user_id:
         return jsonify({"error": "Unauthorized"}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    try:
+        Note.query.filter_by(user_id=user_id).delete()
+        Tag.query.filter_by(user_id=user_id).delete()
+        
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"success": "Account and all related data deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+
+@users_bp.route("/change_password", methods=["PATCH"])  # Remove user_id from route
+@jwt_required()
+def change_password():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)  # Get user from JWT identity
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
     current_password = data.get("current_password")
@@ -110,6 +120,9 @@ def change_password(user_id):
 
     if not check_password_hash(user.password, current_password):
         return jsonify({"error": "Current password is incorrect"}), 400
+
+    if len(new_password) < 6:
+        return jsonify({"error": "Password must be at least 6 characters"}), 400
 
     user.password = generate_password_hash(new_password)
     db.session.commit()

@@ -65,8 +65,7 @@ export default function SaveNotes({ setShowSaveModal }) {
 
     toast
       .promise(handleCreate(newNote), {
-        loading: "saving...",
-        success: <b>Note saved!</b>,
+        success: <b>saved!</b>,
         error: <b>Failed to create note.</b>,
       })
       .then(() => {
