@@ -80,13 +80,11 @@ export default function AdminPage() {
               <h1 className="text-3xl font-bold text-base-content">
                 Admin Dashboard
               </h1>
-              <p className="text-base-content/70 mt-1">
-                Manage users and system overview
-              </p>
+              <p className="text-base-content/70 mt-1">Manage users</p>
             </div>
             <div className="stats shadow">
               <div className="stat">
-                <div className="stat-title">Total Users</div>
+                <div className="stat-title">Registered Users</div>
                 <div className="stat-value text-primary">{users.length}</div>
               </div>
             </div>
@@ -119,7 +117,7 @@ export default function AdminPage() {
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="card-title text-2xl">User Management</h2>
+              <h2 className="card-title text-2xl">Accounts</h2>
             </div>
 
             {users.length === 0 ? (
