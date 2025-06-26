@@ -152,6 +152,12 @@ We welcome contributions! Please follow these steps:
    ```
 5. **Open a Pull Request**
 
+## Live Demo
+
+-Vercel frontend [NotesHub](https://notes-hub-teal.vercel.app/login)
+
+-Render [Backend](https://noteshub-pzs1.onrender.com)
+
 ## 📄 License
 
 MIT License
