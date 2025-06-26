@@ -158,16 +158,16 @@ const Login = () => {
               </button>
             </div>
 
-            <div className="forget">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                Remember Me
-              </label>
-              <a href="#">Forgot Password ?</a>
+            <div className="text-center forget">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/forgot-password");
+                }}
+              >
+                Forgot Password?
+              </a>
             </div>
 
             <button type="submit" className="auth-btn">

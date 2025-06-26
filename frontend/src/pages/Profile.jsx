@@ -145,49 +145,60 @@ export default function Profile() {
   };
 
   const handleChangePassword = async () => {
-    // Validation
     if (
       !passwordForm.currentPassword ||
       !passwordForm.newPassword ||
       !passwordForm.confirmPassword
     ) {
-      alert("All fields are required.");
+      toast.error("All fields are required.");
       return;
     }
 
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert("New passwords do not match.");
+      toast.error("New passwords do not match.");
       return;
     }
 
     if (passwordForm.newPassword.length < 6) {
-      alert("New password must be at least 6 characters long.");
+      toast.error("New password must be at least 6 characters long.");
       return;
     }
 
     const token = localStorage.getItem("access_token");
 
-    try {
-      const res = await fetch(`${VITE_SERVER_URL}/change_password`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          current_password: passwordForm.currentPassword,
-          new_password: passwordForm.newPassword,
-        }),
+    toast
+      .promise(
+        (async () => {
+          const res = await fetch(`${VITE_SERVER_URL}/change_password`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              current_password: passwordForm.currentPassword,
+              new_password: passwordForm.newPassword,
+            }),
+          });
+
+          const data = await res.json();
+          if (!res.ok)
+            throw new Error(data.error || "Failed to change password");
+
+          return data;
+        })(),
+        {
+          loading: "Please wait...",
+          success: "Password changed.",
+          error: (err) => err.message || "Failed to change password",
+        }
+      )
+      .then(() => {
+        closePasswordModal();
+      })
+      .catch((error) => {
+        console.error("Password change error:", error);
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to change password");
-
-      alert("Password changed successfully.");
-      closePasswordModal();
-    } catch (err) {
-      alert("Error: " + err.message);
-    }
   };
 
   const handleDeleteAccount = () => {
@@ -225,11 +236,6 @@ export default function Profile() {
         error: (err) => err.message || "Could not delete account",
       },
       {
-        style: {
-          borderRadius: "10px",
-          background: "#5C3A21",
-          color: "#fff",
-        },
         duration: 2000,
       }
     );
@@ -686,108 +692,129 @@ export default function Profile() {
               </h3>
             </div>
 
-            <div className="space-y-4">
-              {/* Current Password Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-base-content">
-                    Current Password
-                  </span>
-                </label>
-                <div className="relative">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleChangePassword();
+              }}
+            >
+              <div className="space-y-4">
+                {/* Current Password Field */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base-content">
+                      Current Password
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      name="currentPassword"
+                      value={passwordForm.currentPassword}
+                      onChange={handlePasswordInputChange}
+                      className="input input-bordered w-full pr-12"
+                      placeholder="Enter current password"
+                      required
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() =>
+                        setShowCurrentPassword(!showCurrentPassword)
+                      }
+                    >
+                      {showCurrentPassword ? (
+                        <EyeOff className="h-4 w-4 text-base-content/60" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-base-content/60" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* New Password Field */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base-content">
+                      New Password
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      name="newPassword"
+                      value={passwordForm.newPassword}
+                      onChange={handlePasswordInputChange}
+                      className="input input-bordered w-full pr-12"
+                      placeholder="Enter new password"
+                      minLength={6}
+                      required
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? (
+                        <EyeOff className="h-4 w-4 text-base-content/60" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-base-content/60" />
+                      )}
+                    </button>
+                  </div>
+                  <label className="label">
+                    <span className="label-text-alt text-base-content/60">
+                      At least 6 characters
+                    </span>
+                  </label>
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base-content">
+                      Confirm New Password
+                    </span>
+                  </label>
                   <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    name="currentPassword"
-                    value={passwordForm.currentPassword}
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordForm.confirmPassword}
                     onChange={handlePasswordInputChange}
-                    className="input input-bordered w-full pr-12"
-                    placeholder="Enter current password"
+                    className="input input-bordered w-full"
+                    placeholder="Confirm new password"
+                    minLength={6}
+                    required
+                    autoComplete="new-password"
                   />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {showCurrentPassword ? (
-                      <EyeOff className="h-4 w-4 text-base-content/60" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-base-content/60" />
-                    )}
-                  </button>
                 </div>
               </div>
 
-              {/* New Password Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-base-content">
-                    New Password
-                  </span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showNewPassword ? "text" : "password"}
-                    name="newPassword"
-                    value={passwordForm.newPassword}
-                    onChange={handlePasswordInputChange}
-                    className="input input-bordered w-full pr-12"
-                    placeholder="Enter new password"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? (
-                      <EyeOff className="h-4 w-4 text-base-content/60" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-base-content/60" />
-                    )}
-                  </button>
-                </div>
-                <label className="label">
-                  <span className="label-text-alt text-base-content/60">
-                    At least 6 characters
-                  </span>
-                </label>
+              {/* Modal Actions */}
+              <div className="modal-action">
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={closePasswordModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={
+                    !passwordForm.currentPassword ||
+                    !passwordForm.newPassword ||
+                    !passwordForm.confirmPassword
+                  }
+                >
+                  <Lock className="h-4 w-4 mr-2" />
+                  Change Password
+                </button>
               </div>
-
-              {/* Confirm Password Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-base-content">
-                    Confirm New Password
-                  </span>
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordForm.confirmPassword}
-                  onChange={handlePasswordInputChange}
-                  className="input input-bordered w-full"
-                  placeholder="Confirm new password"
-                />
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="modal-action">
-              <button className="btn btn-ghost" onClick={closePasswordModal}>
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={handleChangePassword}
-                disabled={
-                  !passwordForm.currentPassword ||
-                  !passwordForm.newPassword ||
-                  !passwordForm.confirmPassword
-                }
-              >
-                <Lock className="h-4 w-4 mr-2" />
-                Change Password
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}

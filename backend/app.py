@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import db
 from views import register_blueprints
-from views.mailserver import email, mail
+from views.mailserver import email
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from views.auth import init_jwt
@@ -19,7 +19,7 @@ app = Flask(__name__)
 def root():
     return "We are Live!"
 
-app.config['SQLALCHEMY_DATABASE_URI'] ="sqlite:///app.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 
