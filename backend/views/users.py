@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, request, jsonify
 from models import Note, Tag, TokenBlocklist, db, User
 from flask_mail import Message
@@ -7,7 +8,11 @@ from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_tok
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta, timezone
 from flask import current_app 
+from dotenv import load_dotenv
 
+load_dotenv()
+
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 users_bp = Blueprint("users_bp", __name__)
 
@@ -145,7 +150,6 @@ def verify_reset_token(token):
         decoded = decode_token(token)
         jti = decoded.get("jti")
         
-        # 🔐 Check if token is in the blocklist
         is_blocked = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
         if is_blocked:
             print("Token has been revoked")
@@ -174,7 +178,7 @@ def forgot_password():
     if user:
         try:
             token = create_reset_token(user.id)
-            reset_url = f"http://localhost:5173/reset-password/{token}"
+            reset_url = f"{FRONTEND_URL}/reset-password/{token}"
             send_reset_email(user.email, reset_url)
         except Exception as e:
             print(f"Error sending reset email: {str(e)}")

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 
-const BACKEND_URL = import.meta.env.VITE_SERVER_URL;
+const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -18,7 +18,7 @@ export default function ResetPassword() {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/reset-password/${token}`);
+        const res = await fetch(`${API_BASE_URL}/reset-password/${token}`);
         if (res.ok) {
           setVerified(true);
         }
