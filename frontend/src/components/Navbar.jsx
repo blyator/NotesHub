@@ -29,18 +29,13 @@ export default function Navbar() {
 
   const themes = [
     { name: "Autumn", value: "autumn" },
-    { name: "Sunrise", value: "bumblebee" },
     { name: "Retro", value: "retro" },
-    { name: "Love", value: "valentine" },
     { name: "Forest", value: "forest" },
-    { name: "Luxury", value: "luxury" },
     { name: "Sunset", value: "sunset" },
-    { name: "Royal", value: "business" },
     { name: "Olive", value: "dim" },
     { name: "Coffee", value: "coffee" },
     { name: "Night", value: "night" },
     { name: "Dracula", value: "dracula" },
-    { name: "Mango", value: "halloween" },
   ];
 
   return (

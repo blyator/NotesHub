@@ -205,7 +205,10 @@ const SignUp = () => {
               </button>
             </div>
 
-            <button type="submit" className="auth-btn">
+            <button
+              type="submit"
+              className="auth-btn  btn btn-outline btn-primary w-full"
+            >
               Sign Up
             </button>
           </form>
@@ -218,7 +221,7 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={handleGoogleAuth}
-                className="social-btn google-btn"
+                className="social-btn google-btn btn btn-outline btn-primary"
               >
                 <svg viewBox="0 0 32 32" className="social-icon">
                   {/* Google icon SVG */}
@@ -245,7 +248,7 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={handleAppleAuth}
-                className="social-btn apple-btn"
+                className="social-btn apple-btn btn btn-outline btn-primary"
               >
                 <svg viewBox="0 0 32 32" className="social-icon">
                   {/* Apple icon SVG */}
@@ -473,7 +476,7 @@ const SignUp = () => {
           width: 80%;
           height: 40px;
           border-radius: 40px;
-          background-color: rgb(255, 255, 255, 0.5);
+          background-color: none
           border: none;
           outline: none;
           cursor: pointer;
@@ -488,7 +491,7 @@ const SignUp = () => {
         }
 
         .auth-btn:hover {
-          background-color: rgb(255, 255, 255, 0.8);
+    
           transform: translateY(-2px);
         }
 
@@ -528,7 +531,7 @@ const SignUp = () => {
           height: 40px;
           border-radius: 8px;
           border: 1px solid rgba(255, 255, 255, 0.3);
-          background: rgba(255, 255, 255, 0.1);
+          background: none
           color: #fff;
           font-size: 0.9rem;
           font-weight: 500;
@@ -542,7 +545,6 @@ const SignUp = () => {
         }
 
         .social-btn:hover {
-          background: rgba(255, 255, 255, 0.2);
           border-color: rgba(255, 255, 255, 0.5);
           transform: translateY(-1px);
         }
@@ -553,12 +555,10 @@ const SignUp = () => {
         }
 
         .google-btn:hover {
-          background: rgba(66, 133, 244, 0.1);
           border-color: #4285f4;
         }
 
         .apple-btn:hover {
-          background: rgba(0, 0, 0, 0.1);
           border-color: rgba(255, 255, 255, 0.6);
         }
 
@@ -582,7 +582,7 @@ const SignUp = () => {
         }
 
         .toggle-btn:hover {
-          color: #fff;
+          color: #7B68EE;
           text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
 

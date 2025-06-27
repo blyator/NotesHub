@@ -158,7 +158,7 @@ const Login = () => {
               </button>
             </div>
 
-            <div className="text-center forget">
+            <div className="text-right forget">
               <a
                 href="#"
                 onClick={(e) => {
@@ -170,7 +170,10 @@ const Login = () => {
               </a>
             </div>
 
-            <button type="submit" className="auth-btn">
+            <button
+              type="submit"
+              className="auth-btn btn btn-outline btn-success"
+            >
               Log In
             </button>
           </form>
@@ -179,11 +182,11 @@ const Login = () => {
             <div className="social-divider">
               <span>or continue with</span>
             </div>
-            <div className="social-buttons">
+            <div className="social-buttons ">
               <button
                 type="button"
                 onClick={handleGoogleAuth}
-                className="social-btn google-btn"
+                className="social-btn google-btn btn btn-outline btn-primary"
               >
                 <svg viewBox="0 0 32 32" className="social-icon">
                   {/* Google icon SVG */}
@@ -210,7 +213,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleAppleAuth}
-                className="social-btn apple-btn"
+                className="social-btn apple-btn btn btn-outline btn-primary"
               >
                 <svg viewBox="0 0 32 32" className="social-icon">
                   {/* Apple icon SVG */}
@@ -407,16 +410,16 @@ const Login = () => {
         }
 
         .forget {
-          margin: 35px 0;
+          margin: 10px 0 20px 0;
           font-size: 0.85rem;
           color: rgba(255, 255, 255, 0.7);
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-end;
         }
 
         .forget label {
           display: flex;
-          align-items: center;
+          align-items: right;
         }
 
         .forget label input {
@@ -425,7 +428,7 @@ const Login = () => {
 
         .forget a {
           color: rgba(255, 255, 255, 0.9);
-          text-decoration: none;
+          text-decoration: underline;
           font-weight: 600;
         }
 
@@ -437,7 +440,7 @@ const Login = () => {
           width: 80%;
           height: 40px;
           border-radius: 40px;
-          background-color: rgb(255, 255, 255, 0.5);
+          background-color: none
           border: none;
           outline: none;
           cursor: pointer;
@@ -452,7 +455,6 @@ const Login = () => {
         }
 
         .auth-btn:hover {
-          background-color: rgb(255, 255, 255, 0.8);
           transform: translateY(-2px);
         }
 
@@ -492,7 +494,7 @@ const Login = () => {
           height: 40px;
           border-radius: 8px;
           border: 1px solid rgba(255, 255, 255, 0.3);
-          background: rgba(255, 255, 255, 0.1);
+          background: none
           color: #fff;
           font-size: 0.9rem;
           font-weight: 500;
@@ -506,7 +508,6 @@ const Login = () => {
         }
 
         .social-btn:hover {
-          background: rgba(255, 255, 255, 0.2);
           border-color: rgba(255, 255, 255, 0.5);
           transform: translateY(-1px);
         }
@@ -517,13 +518,11 @@ const Login = () => {
         }
 
         .google-btn:hover {
-          background: rgba(66, 133, 244, 0.1);
           border-color: #4285f4;
         }
 
         .apple-btn:hover {
-          background: rgba(0, 0, 0, 0.1);
-          border-color: rgba(255, 255, 255, 0.6);
+          border-color: #4285f4;
         }
 
         .toggle-auth {
@@ -546,7 +545,7 @@ const Login = () => {
         }
 
         .toggle-btn:hover {
-          color: #fff;
+          color: #7B68EE;
           text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
 

@@ -81,7 +81,7 @@ export default function WelcomeMsg() {
           ),
           {
             duration: 3000,
-            position: "top-right",
+            position: "top-center",
           }
         );
 

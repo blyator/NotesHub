@@ -825,12 +825,6 @@ export default function Profile() {
           <div className="modal-box">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-error">Delete Account</h3>
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="btn btn-sm btn-circle btn-ghost"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
 
             <p className="py-4">

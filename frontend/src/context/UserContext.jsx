@@ -36,7 +36,6 @@ export const UserProvider = ({ children }) => {
     if (data.success) {
       try {
         const loginData = await login_user(email, password);
-        localStorage.setItem("showWelcomeMsg", "true");
         return loginData;
       } catch (loginError) {
         throw new Error("Account created. Please login.");
