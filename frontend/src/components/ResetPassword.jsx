@@ -43,7 +43,7 @@ export default function ResetPassword() {
       (async () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const res = await fetch(`${BACKEND_URL}/reset-password/${token}`, {
+        const res = await fetch(`${API_BASE_URL}/reset-password/${token}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
