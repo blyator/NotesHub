@@ -45,6 +45,10 @@ export default function ForgotPassword() {
           error: (err) => err.message || "Please try again.",
         }
       )
+      .then(() => {
+        setEmail("");
+      })
+      .catch(() => {})
       .finally(() => {
         setLoading(false);
       });
