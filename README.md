@@ -118,9 +118,15 @@ NotesHub is an app designed to help users easily create, manage, and organize th
 
 ### Admin Access
 
-#### Admin Login
+Admin Login
 
 1. Login with admin credentials
+
+```
+- Email: admin@noteshub.com
+- Password: admin@admin
+```
+
 2. Admins will automatically be redirected to admin page
 3. Access the admin dashboard to view registered users
 
