@@ -27,7 +27,7 @@ NotesHub is an app designed to help users easily create, manage, and organize th
 - Theme support
 - Intuitive navigation
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -42,7 +42,7 @@ NotesHub is an app designed to help users easily create, manage, and organize th
 - **SQLAlchemy** - Database ORM
 - **PostgreSQL/SQLite** - Database options
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -154,7 +154,9 @@ We welcome contributions! Please follow these steps:
 
 ## Live Demo
 
--Vercel frontend [NotesHub](https://notes-hub-teal.vercel.app/login)
+-Video Demo [Loom](https://www.loom.com/share/342a3fc565b648048bbdf5e6c42c8eb2?sid=a99e5b2b-2299-49e2-910e-259196d4b2aa)
+
+-Vercel frontend [NotesHub](https://notes-hub-psi.vercel.app/login)
 
 -Render [Backend](https://noteshub-pzs1.onrender.com)
 

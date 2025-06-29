@@ -63,7 +63,7 @@ export default function WelcomeMsg() {
                   <div className="flex-shrink-0 pt-0.5">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
+                      src="https://i.pinimg.com/736x/f1/54/da/f154da6a5577947ab19cf2766830ba9e.jpg"
                       alt=""
                     />
                   </div>

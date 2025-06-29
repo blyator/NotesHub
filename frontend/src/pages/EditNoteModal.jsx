@@ -5,22 +5,7 @@ import { TagsContext } from "../context/TagsContext";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const badgeColors = [
-  "badge-primary",
-  "badge-secondary",
-  "badge-accent",
-  "badge-info",
-  "badge-success",
-  "badge-warning",
-  "badge-error",
-];
-
-function getRandomBadgeClass(name) {
-  const hash = name
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return badgeColors[hash % badgeColors.length];
-}
+const badgeColors = ["badge-primary", "badge-warning", "badge-error"];
 
 export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
   const [title, setTitle] = useState("");
@@ -187,19 +172,19 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 className="input input-ghost w-full"
-                placeholder="e.g. react, python"
+                placeholder="just separate with commas"
               />
               <div className="mt-2 flex flex-wrap gap-2">
                 {tagInput
                   .split(",")
                   .map((t) => t.trim())
                   .filter((t) => t)
-                  .map((name) => (
+                  .map((name, index) => (
                     <span
                       key={name}
-                      className={`badge badge-sm ${getRandomBadgeClass(
-                        name
-                      )} text-primary-content`}
+                      className={`badge badge-sm ${
+                        badgeColors[index % badgeColors.length]
+                      } text-primary-content`}
                     >
                       {name}
                     </span>

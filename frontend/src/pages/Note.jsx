@@ -3,6 +3,8 @@ import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
 import DeletePopUp from "../components/DeletePopUp";
 import { NotesContext } from "../context/NotesContext";
 
+const badgeColors = ["badge-primary", "badge-accent", "badge-error"];
+
 export default function Note({
   note,
   activeNoteId,
@@ -100,27 +102,16 @@ export default function Note({
 
         {note.tags && note.tags.length > 0 && (
           <div className="px-4 pb-3 flex flex-wrap gap-2">
-            {note.tags.map((tag) => {
-              const badgeColors = [
-                "badge-primary",
-                "badge-secondary",
-                "badge-accent",
-                "badge-info",
-                "badge-success",
-                "badge-warning",
-                "badge-error",
-              ];
-              const colorClass =
-                badgeColors[Math.floor(Math.random() * badgeColors.length)];
-              return (
-                <span
-                  key={tag.id || tag.name}
-                  className={`badge badge-sm ${colorClass} text-white font-medium`}
-                >
-                  {tag.name}
-                </span>
-              );
-            })}
+            {note.tags.map((tag, index) => (
+              <span
+                key={tag.id || tag.name}
+                className={`badge badge-sm ${
+                  badgeColors[index % badgeColors.length]
+                } text-white font-medium`}
+              >
+                {tag.name}
+              </span>
+            ))}
           </div>
         )}
 

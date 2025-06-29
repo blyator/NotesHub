@@ -5,22 +5,7 @@ import { NotesContext } from "../context/NotesContext";
 import { TagsContext } from "../context/TagsContext";
 import { UserContext } from "../context/UserContext.jsx";
 
-const badgeColors = [
-  "badge-primary",
-  "badge-secondary",
-  "badge-accent",
-  "badge-info",
-  "badge-success",
-  "badge-warning",
-  "badge-error",
-];
-
-function getRandomBadgeClass(name) {
-  const hash = name
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return badgeColors[hash % badgeColors.length];
-}
+const badgeColors = ["badge-success", "badge-warning", "badge-error"];
 
 export default function SaveNotes({ setShowSaveModal }) {
   const { handleCreate } = useContext(NotesContext);
@@ -145,7 +130,7 @@ export default function SaveNotes({ setShowSaveModal }) {
 
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text">You can add Tags</span>
+              <span className="label-text">you can add tags</span>
             </label>
             <input
               type="text"
@@ -158,12 +143,12 @@ export default function SaveNotes({ setShowSaveModal }) {
 
           {inputTagNames.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {inputTagNames.map((tag) => (
+              {inputTagNames.map((tag, index) => (
                 <span
                   key={tag}
-                  className={`badge badge-sm ${getRandomBadgeClass(
-                    tag
-                  )} text-white`}
+                  className={`badge badge-sm ${
+                    badgeColors[index % badgeColors.length]
+                  } text-white`}
                 >
                   {tag}
                 </span>
