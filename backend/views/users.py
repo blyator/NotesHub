@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, request, jsonify
-from models import Note, Tag, TokenBlocklist, db, User
+from models import Note, NoteTag, Tag, TokenBlocklist, db, User
 from flask_mail import Message
 from views.mailserver import send_email, send_reset_email
 from werkzeug.security import generate_password_hash
@@ -88,24 +88,29 @@ def update_user(user_id):
 @users_bp.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
-    current_user_id = get_jwt_identity()
-    if current_user_id != user_id:
-        return jsonify({"error": "Unauthorized"}), 403
 
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
 
     try:
+        user_notes = Note.query.filter_by(user_id=user_id).all()
+        note_ids = [note.id for note in user_notes]
+        
+
+        if note_ids:
+            NoteTag.query.filter(NoteTag.note_id.in_(note_ids)).delete()
+        
         Note.query.filter_by(user_id=user_id).delete()
         Tag.query.filter_by(user_id=user_id).delete()
-        
         db.session.delete(user)
         db.session.commit()
+        
         return jsonify({"success": "Account and all related data deleted successfully"}), 200
-    except Exception as e:
+        
+    except Exception:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Failed to delete account"}), 500
 
 
 

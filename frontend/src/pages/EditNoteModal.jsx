@@ -118,6 +118,7 @@ export default function EditNoteModal({ selectedNoteId, setSelectedNoteId }) {
       ]);
 
       fetchNotes();
+      toast.success("updated!");
       handleClose();
     } catch (err) {
       toast.error(`Failed to save note`);

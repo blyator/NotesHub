@@ -33,7 +33,7 @@ export default function SaveNotes({ setShowSaveModal }) {
     fetchTags();
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!title.trim()) {
@@ -46,10 +46,34 @@ export default function SaveNotes({ setShowSaveModal }) {
       .map((note) => note.trim())
       .filter((note) => note !== "");
 
-    const newNote = { title, notes, tag_ids: selectedTags };
+    const inputTags = newTagName
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+
+    const matchingTags = tags.filter((tag) => inputTags.includes(tag.name));
+    let finalTagIds = matchingTags.map((tag) => tag.id);
+
+    const newTagsToCreate = inputTags.filter(
+      (tag) => !tags.some((existing) => existing.name === tag)
+    );
+
+    if (newTagsToCreate.length > 0) {
+      for (const tagName of newTagsToCreate) {
+        try {
+          const createdTag = await createTag(tagName);
+          finalTagIds.push(createdTag.id);
+        } catch (error) {
+          console.error(`Failed to create tag "${tagName}":`, error);
+        }
+      }
+    }
+
+    const newNote = { title, notes, tag_ids: finalTagIds };
 
     toast
       .promise(handleCreate(newNote), {
+        loading: "Saving..",
         success: <b>saved!</b>,
         error: <b>Failed to create note.</b>,
       })
@@ -74,22 +98,6 @@ export default function SaveNotes({ setShowSaveModal }) {
       .filter((tag) => tag);
 
     setInputTagNames(inputTags);
-
-    const matchingTags = tags.filter((tag) => inputTags.includes(tag.name));
-    const matchedTagIds = matchingTags.map((tag) => tag.id);
-
-    const newTagsToCreate = inputTags.filter(
-      (tag) => !tags.some((existing) => existing.name === tag)
-    );
-
-    setSelectedTags(matchedTagIds);
-
-    newTagsToCreate.forEach((tagName) => {
-      createTag(tagName).then((createdTag) => {
-        setSelectedTags((prev) => [...prev, createdTag.id]);
-        fetchTags();
-      });
-    });
   };
 
   const handleDiscard = () => {
@@ -130,7 +138,7 @@ export default function SaveNotes({ setShowSaveModal }) {
 
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text">you can add tags</span>
+              <span className="label-text">You can add Tags</span>
             </label>
             <input
               type="text"

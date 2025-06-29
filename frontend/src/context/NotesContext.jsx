@@ -145,6 +145,7 @@ export function NotesProvider({ children }) {
       })
       .then(() => {
         setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+        toast.success("Note deleted!");
       })
       .catch((err) => {
         toast.error("Failed to delete note");
