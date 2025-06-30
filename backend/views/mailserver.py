@@ -32,7 +32,7 @@ def send_email(name, email):
             </ul>
             <p>To get started, please visit the link below:</p>
             <p>
-                <a href="http://localhost:5173/" style="background-color: #1d4ed8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to NotesHub</a>
+                <a href="https://notes-hub-psi.vercel.app" style="background-color: #1d4ed8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to NotesHub</a>
             </p>
             <p>We look forward to supporting your productivity.</p>
             <p>Sincerely,<br/>The NotesHub Team</p>
@@ -50,7 +50,7 @@ def send_email(name, email):
     - Tag and categorize your content for better organization
     - Access your notes anytime with a simple and intuitive interface
 
-    To get started, visit: http://localhost:5173/
+    To get started, visit: https://notes-hub-psi.vercel.app
 
     We look forward to supporting your productivity.
 
