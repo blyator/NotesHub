@@ -75,11 +75,6 @@ const Login = () => {
 
       if (data?.access_token) {
         setJustLoggedIn(true);
-        toast.success(
-          `Welcome back, ${
-            currentUser?.name || currentUser?.email || "friend"
-          }!`
-        );
         if (currentUser?.is_admin) {
           navigate("/admin");
         } else {

@@ -105,7 +105,7 @@ export default function Navbar() {
             </div>
             <ul
               tabIndex={0}
-              className="dropdown-content bg-base-100 rounded-box z-[1] w-40 p-2 shadow-2xl border border-base-200"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-42 p-2 shadow space-y-1"
             >
               <li className="px-2 py-1 text-xs font-medium text-base-content/70 border-b border-base-200 mb-1">
                 Choose Theme
