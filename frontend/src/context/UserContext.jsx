@@ -64,7 +64,7 @@ export const UserProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok || data.error) {
-        throw new Error(data.error || "Login failed");
+        return Promise.reject(new Error(data.error || "Login failed"));
       }
 
       if (data.access_token) {
@@ -73,7 +73,7 @@ export const UserProvider = ({ children }) => {
         return data;
       }
     } catch (error) {
-      throw error;
+      return Promise.reject(error);
     }
   };
 

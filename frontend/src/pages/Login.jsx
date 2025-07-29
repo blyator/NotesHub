@@ -69,7 +69,7 @@ const Login = () => {
         {
           loading: "Signing you in...",
           success: "Login successful!",
-          error: (err) => err.message || "Login failed",
+          error: (err) => err.message || "Invalid email or password",
         }
       );
 
@@ -87,7 +87,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error?.message || "Invalid email or password");
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
