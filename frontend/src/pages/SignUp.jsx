@@ -221,7 +221,7 @@ const Signup = () => {
             {/* Right Column - Signup Form */}
             <div className="flex justify-center w-full">
               <div className="w-full max-w-md">
-                <div className="card bg-base-200 shadow-xl lg:mt-25">
+                <div className="card bg-base-200 shadow-xl lg:mt-20">
                   <div className="card-body p-6 sm:p-8">
                     <div className="text-center mb-6">
                       <h2 className="text-2xl font-bold text-base-content mb-2">
