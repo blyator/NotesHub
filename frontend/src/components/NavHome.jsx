@@ -25,7 +25,6 @@ const Navbar = () => {
     { name: "Sunset", value: "sunset" },
     { name: "Olive", value: "dim" },
     { name: "Coffee", value: "coffee" },
-    { name: "Night", value: "night" },
     { name: "Dracula", value: "dracula" },
   ];
 
@@ -43,6 +42,19 @@ const Navbar = () => {
       start: false,
       [dropdown]: !prev[dropdown],
     }));
+  };
+
+  const getThemeDotColor = (theme) => {
+    const colorMap = {
+      autumn: "bg-orange-500",
+      retro: "bg-amber-400",
+      forest: "bg-emerald-600",
+      sunset: "bg-lime-500",
+      dim: "bg-teal-500",
+      coffee: "bg-[#6F4E37]",
+      dracula: "bg-purple-600",
+    };
+    return colorMap[theme] || "bg-primary";
   };
 
   return (
@@ -77,7 +89,11 @@ const Navbar = () => {
                         onClick={() => handleThemeChange(theme.value)}
                         className="w-full flex items-center space-x-3 px-4 py-2 hover:bg-base-200 transition-colors"
                       >
-                        <div className="w-4 h-4 rounded-full bg-primary"></div>
+                        <div
+                          className={`w-4 h-4 rounded-full ${getThemeDotColor(
+                            theme.value
+                          )}`}
+                        ></div>
                         <span className="text-base-content">{theme.name}</span>
                       </button>
                     ))}
@@ -121,7 +137,11 @@ const Navbar = () => {
                       onClick={() => handleThemeChange(theme.value)}
                       className="w-full flex items-center space-x-3 px-4 py-2 hover:bg-base-200 transition-colors"
                     >
-                      <div className="w-4 h-4 rounded-full bg-primary"></div>
+                      <div
+                        className={`w-4 h-4 rounded-full ${getThemeDotColor(
+                          theme.value
+                        )}`}
+                      ></div>
                       <span className="text-base-content">{theme.name}</span>
                     </button>
                   ))}
