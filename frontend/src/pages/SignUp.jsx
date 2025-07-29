@@ -186,7 +186,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen">
       <NavHome />
-      <section className="pt-24 lg:pt-50 pb-12 px-4 sm:px-6 lg:px-8 min-h-screen">
+      <section className="pt-30  pb-12 px-4 sm:px-6 lg:px-8 min-h-screen">
         <div className="max-w-8xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left Column - Marketing Content */}
@@ -221,7 +221,7 @@ const Signup = () => {
             {/* Right Column - Signup Form */}
             <div className="flex justify-center w-full">
               <div className="w-full max-w-md">
-                <div className="card bg-base-200 shadow-xl lg:mt-30">
+                <div className="card bg-base-200 shadow-xl lg:mt-40">
                   <div className="card-body p-6 sm:p-8">
                     <div className="text-center mb-6">
                       <h2 className="text-2xl font-bold text-base-content mb-2">
