@@ -1,22 +1,38 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  Menu,
-  X,
-  Edit3,
-  Palette,
-  User,
-  ChevronDown,
-  ArrowRight,
-} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
-const Navbar = () => {
+import { Link } from "react-router-dom";
+import { Menu, X, Palette, User, ChevronDown, ArrowRight } from "lucide-react";
+
+const NavHome = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [dropdowns, setDropdowns] = useState({
     themes: false,
     login: false,
     start: false,
   });
+
+  const themeDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        themeDropdownRef.current &&
+        !themeDropdownRef.current.contains(event.target)
+      ) {
+        setDropdowns((prev) => ({ ...prev, themes: false }));
+      }
+    };
+
+    if (dropdowns.themes) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdowns.themes]);
 
   const themes = [
     { name: "Autumn", value: "autumn" },
@@ -31,15 +47,12 @@ const Navbar = () => {
   const handleThemeChange = (theme) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
-    setDropdowns({ ...dropdowns, themes: false });
     setIsMenuOpen(false);
   };
 
   const toggleDropdown = (dropdown) => {
     setDropdowns((prev) => ({
-      themes: false,
-      login: false,
-      start: false,
+      ...Object.fromEntries(Object.keys(prev).map((key) => [key, false])),
       [dropdown]: !prev[dropdown],
     }));
   };
@@ -67,7 +80,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             <div className="flex items-center space-x-3 dropdown-container">
-              <div className="relative">
+              <div className="relative" ref={themeDropdownRef}>
                 <button
                   onClick={() => toggleDropdown("themes")}
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-base-200 btn btn-soft btn-error hover:border-base-300 hover:bg-base-200 transition-all duration-200"
@@ -121,7 +134,7 @@ const Navbar = () => {
 
           <div className="md:hidden flex items-center gap-4">
             {/* Mobile Theme Button */}
-            <div className="relative">
+            <div className="relative" ref={themeDropdownRef}>
               <button
                 onClick={() => toggleDropdown("themes")}
                 className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-base-200 transition-colors"
@@ -187,4 +200,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavHome;
