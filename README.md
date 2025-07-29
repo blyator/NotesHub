@@ -160,8 +160,6 @@ We welcome contributions! Please follow these steps:
 
 ## Live Demo
 
--Video Demo [Loom](https://www.loom.com/share/342a3fc565b648048bbdf5e6c42c8eb2?sid=a99e5b2b-2299-49e2-910e-259196d4b2aa)
-
 -Vercel frontend [NotesHub](https://notes-hub-psi.vercel.app/login)
 
 -Render [Backend](https://noteshub-pzs1.onrender.com)
