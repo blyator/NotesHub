@@ -11,22 +11,26 @@ const NavHome = () => {
     start: false,
   });
 
-  const themeDropdownRef = useRef(null);
+  const desktopThemeRef = useRef(null);
+  const mobileThemeRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        themeDropdownRef.current &&
-        !themeDropdownRef.current.contains(event.target)
-      ) {
+      const isOutsideDesktop =
+        desktopThemeRef.current &&
+        !desktopThemeRef.current.contains(event.target);
+
+      const isOutsideMobile =
+        mobileThemeRef.current &&
+        !mobileThemeRef.current.contains(event.target);
+
+      if (isOutsideDesktop && isOutsideMobile) {
         setDropdowns((prev) => ({ ...prev, themes: false }));
       }
     };
 
     if (dropdowns.themes) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
@@ -47,7 +51,6 @@ const NavHome = () => {
   const handleThemeChange = (theme) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
-    setIsMenuOpen(false);
   };
 
   const toggleDropdown = (dropdown) => {
@@ -80,7 +83,7 @@ const NavHome = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             <div className="flex items-center space-x-3 dropdown-container">
-              <div className="relative" ref={themeDropdownRef}>
+              <div className="relative" ref={desktopThemeRef}>
                 <button
                   onClick={() => toggleDropdown("themes")}
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-base-200 btn btn-soft btn-error hover:border-base-300 hover:bg-base-200 transition-all duration-200"
@@ -134,7 +137,7 @@ const NavHome = () => {
 
           <div className="md:hidden flex items-center gap-4">
             {/* Mobile Theme Button */}
-            <div className="relative" ref={themeDropdownRef}>
+            <div className="relative" ref={mobileThemeRef}>
               <button
                 onClick={() => toggleDropdown("themes")}
                 className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-base-200 transition-colors"
