@@ -35,9 +35,21 @@ export default function Navbar() {
     { name: "Sunset", value: "sunset" },
     { name: "Olive", value: "dim" },
     { name: "Coffee", value: "coffee" },
-    { name: "Night", value: "night" },
     { name: "Dracula", value: "dracula" },
   ];
+
+  const getThemeDotColor = (theme) => {
+    const colorMap = {
+      autumn: "bg-orange-500",
+      retro: "bg-amber-400",
+      forest: "bg-emerald-600",
+      sunset: "bg-lime-500",
+      dim: "bg-teal-500",
+      coffee: "bg-[#6F4E37]",
+      dracula: "bg-purple-600",
+    };
+    return colorMap[theme] || "bg-primary";
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50 p-0">
@@ -100,14 +112,23 @@ export default function Navbar() {
               </li>
               {themes.map((theme) => (
                 <li key={theme.value}>
-                  <input
-                    type="radio"
-                    name="theme-dropdown"
-                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start hover:bg-primary/10"
-                    aria-label={theme.name}
-                    data-theme={theme.value}
-                    onChange={handleThemeChange}
-                  />
+                  <button
+                    className="w-full btn btn-sm btn-block btn-ghost justify-start hover:bg-primary/10"
+                    onClick={() => {
+                      document.documentElement.setAttribute(
+                        "data-theme",
+                        theme.value
+                      );
+                      localStorage.setItem("theme", theme.value);
+                    }}
+                  >
+                    <div
+                      className={`w-3 h-3 rounded-full mr-2 ${getThemeDotColor(
+                        theme.value
+                      )}`}
+                    ></div>
+                    {theme.name}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -138,9 +159,6 @@ export default function Navbar() {
                   Profile
                 </a>
               </li>
-              {/* <li>
-                <a>Trash</a>
-              </li> */}
               <li>
                 <a
                   onClick={(e) => {

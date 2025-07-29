@@ -31,25 +31,25 @@ export default function Landing() {
       icon: <Cloud className="w-8 h-8" />,
       title: "Cloud Sync",
       description:
-        "Your notes sync seamlessly across all your devices with end-to-end encryption.",
+        "Your notes sync  across all your devices with end-to-end encryption.",
     },
     {
       icon: <Tag className="w-8 h-8" />,
       title: "Smart Tags",
       description:
-        "Organize your thoughts with an intelligent tagging system that learns from your habits.",
+        "Organize your thoughts with an intelligent tagging system .",
     },
     {
       icon: <Type className="w-8 h-8" />,
       title: "Rich Text",
       description:
-        "Format your notes beautifully with our intuitive rich text editor and markdown support.",
+        "Format your notes beautifully with our intuitive editor and markdown support.",
     },
     {
       icon: <Shield className="w-8 h-8" />,
       title: "Privacy First",
       description:
-        "Your data belongs to you. We use zero-knowledge encryption to keep your notes private.",
+        "Your data belongs to you. We use state of the art encryption to keep your notes private.",
     },
   ];
 
@@ -426,9 +426,6 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                  <Edit3 className="w-5 h-5 text-white" />
-                </div>
                 <span className="text-xl font-bold">NotesHub</span>
               </div>
               <p className="text-base-content">
@@ -458,19 +455,19 @@ export default function Landing() {
               <h4 className="font-semibold mb-4">Connect</h4>
               <div className="flex space-x-4">
                 <a
-                  href="#"
+                  href="https://github.com/blyator"
                   className="text-base-content/70 hover:text-base-content"
                 >
                   <Github className="w-6 h-6" />
                 </a>
                 <a
-                  href="mailto:hello@noteshub.app"
+                  href="mailto:dmnbilly@gmail.com"
                   className="text-base-content/70 hover:text-base-content"
                 >
                   <Mail className="w-6 h-6" />
                 </a>
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+254721400997"
                   className="text-base-content/70 hover:text-base-content"
                 >
                   <Phone className="w-6 h-6" />
