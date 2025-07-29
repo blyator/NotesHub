@@ -46,14 +46,19 @@ export const UserProvider = ({ children }) => {
   }
   //*****************login a user ********************
 
-  const login_user = async (email, password) => {
+  const login_user = async (
+    email,
+    password,
+    provider = "credentials",
+    name = null
+  ) => {
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, provider, name }),
       });
 
       const data = await response.json();
@@ -64,9 +69,7 @@ export const UserProvider = ({ children }) => {
 
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
-
         setAuthToken(data.access_token);
-
         return data;
       }
     } catch (error) {
@@ -128,7 +131,7 @@ export const UserProvider = ({ children }) => {
         }
       )
       .then(() => {
-        navigate("/login");
+        navigate("/home");
       })
       .catch((error) => {
         console.error("Logout error:", error);

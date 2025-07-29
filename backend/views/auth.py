@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify, Blueprint
 from models import db, User, TokenBlocklist
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_jwt_extended import jwt_manager, create_access_token, jwt_required, get_jwt_identity, get_jwt, JWTManager
 from datetime import datetime
 from datetime import timezone
+from views.mailserver import send_email
+
 
 
 auth_bp = Blueprint("auth_bp", __name__)
@@ -30,17 +32,28 @@ def init_jwt(app):
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
+    email = request.json.get("email")
+    password = request.json.get("password")
+    provider = request.json.get("provider", "credentials")
+    name = request.json.get("name", None) 
 
     if not email or not password:
         return jsonify({"error": "email or password is wrong"}), 400
-    
+
     user = User.query.filter_by(email=email).first()
 
-    if user and check_password_hash(user.password, password):
+    if provider == "google":
+        if not user:
+            user = User(
+                email=email,
+                name=name or email, 
+                password=generate_password_hash(password)
+            )
+            db.session.add(user)
+            db.session.commit()
+            send_email(name, email)
+
         access_token = create_access_token(identity=user.id)
-        
         user_data = {
             "id": user.id,
             "name": user.name,
@@ -48,14 +61,21 @@ def login():
             "is_admin": user.is_admin,
             "created_at": user.created_at.isoformat() if user.created_at else None
         }
-        
-        return jsonify(
-            access_token=access_token,
-            user=user_data
-        ), 200
+        return jsonify(access_token=access_token, user=user_data), 200
 
-    else:
-        return jsonify({"error": "email or password is wrong"}), 400
+    if user and check_password_hash(user.password, password):
+        access_token = create_access_token(identity=user.id)
+        user_data = {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "is_admin": user.is_admin,
+            "created_at": user.created_at.isoformat()
+        }
+        return jsonify(access_token=access_token, user=user_data), 200
+
+    return jsonify({"error": "email or password is wrong"}), 400
+
 
 
 

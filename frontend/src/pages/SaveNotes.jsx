@@ -138,7 +138,7 @@ export default function SaveNotes({ setShowSaveModal }) {
 
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text">You can add Tags</span>
+              <span className="label-text">you can add multiple tags</span>
             </label>
             <input
               type="text"

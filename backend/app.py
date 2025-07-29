@@ -19,7 +19,7 @@ app = Flask(__name__)
 def root():
     return "We are Live!"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///notehubs.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = ('sqlite:///notes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 

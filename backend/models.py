@@ -15,6 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    provider = db.Column(db.String(50), default='credentials')
 
     notes = db.relationship(
         'Note',
@@ -29,7 +30,6 @@ class User(db.Model):
         lazy=True,
         cascade="all, delete-orphan"
     )
-
 
 class Note(db.Model):
     __tablename__ = 'notes'

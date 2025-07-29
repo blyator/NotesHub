@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { themeChange } from "theme-change";
 import { UserContext } from "../context/UserContext";
 import { NotesContext } from "../context/NotesContext";
+import { Palette } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -85,30 +86,24 @@ export default function Navbar() {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-xs bg-primary rounded-2xl text-primary-content"
+              className="btn btn-ghost btn-circle hover:bg-primary/10 transition-colors duration-200"
               aria-label="Select theme"
             >
-              Theme
-              <svg
-                width="10px"
-                height="10px"
-                className="inline-block h-2 w-2 fill-current opacity-60"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 2048 2048"
-              >
-                <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-              </svg>
+              <Palette className="w-6 h-6 text-base-content hover:text-primary transition-colors duration-200" />
             </div>
             <ul
               tabIndex={0}
-              className="dropdown-content bg-base-100 rounded-box z-[1] w-40 p-2 shadow-2xl"
+              className="dropdown-content bg-base-100 rounded-box z-[1] w-40 p-2 shadow-2xl border border-base-200"
             >
+              <li className="px-2 py-1 text-xs font-medium text-base-content/70 border-b border-base-200 mb-1">
+                Choose Theme
+              </li>
               {themes.map((theme) => (
                 <li key={theme.value}>
                   <input
                     type="radio"
                     name="theme-dropdown"
-                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+                    className="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start hover:bg-primary/10"
                     aria-label={theme.name}
                     data-theme={theme.value}
                     onChange={handleThemeChange}
@@ -143,9 +138,9 @@ export default function Navbar() {
                   Profile
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a>Trash</a>
-              </li>
+              </li> */}
               <li>
                 <a
                   onClick={(e) => {

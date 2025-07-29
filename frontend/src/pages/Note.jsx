@@ -5,6 +5,16 @@ import { NotesContext } from "../context/NotesContext";
 
 const badgeColors = ["badge-primary", "badge-accent", "badge-error"];
 
+const cardStyles = [
+  { bg: "bg-primary/10", border: "border-primary" },
+  { bg: "bg-secondary/10", border: "border-secondary" },
+  { bg: "bg-accent/10", border: "border-accent" },
+  { bg: "bg-warning/10", border: "border-warning" },
+  { bg: "bg-info/10", border: "border-info" },
+  { bg: "bg-success/10", border: "border-success" },
+  { bg: "bg-error/10", border: "border-error" },
+];
+
 export default function Note({
   note,
   activeNoteId,
@@ -15,6 +25,20 @@ export default function Note({
   const [open, setOpen] = useState(false);
   const isMobile = window.innerWidth < 768;
   const isActive = activeNoteId === note.id;
+
+  const getCardStyle = () => {
+    const hash = note.id
+      .toString()
+      .split("")
+      .reduce((a, b) => {
+        a = (a << 5) - a + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+    const index = Math.abs(hash) % cardStyles.length;
+    return cardStyles[index];
+  };
+
+  const cardStyle = getCardStyle();
 
   const handleTouchStart = (e) => {
     if (isMobile) {
@@ -71,43 +95,49 @@ export default function Note({
   return (
     <>
       <div
-        className="card bg-base-100 shadow-md w-full hover:bg-base-200 group cursor-pointer transition-all duration-200"
+        className={`${cardStyle.bg} p-4 rounded-lg border-l-4 ${cardStyle.border} hover:bg-opacity-80 group cursor-pointer transition-all duration-200 shadow-md`}
         onClick={handleCardClick}
         onTouchStart={handleTouchStart}
         role="button"
         aria-label={`Edit note: ${note.title}`}
       >
-        <div className="card-body p-4">
-          <h2 className="card-title text-lg text-base-content line-clamp-1">
-            {note.title}
-          </h2>
-          <ul className="list-disc list-inside mt-1 space-y-1">
-            {Array.isArray(note.notes)
-              ? note.notes.slice(0, 3).map((item, index) => (
-                  <li
-                    key={index}
-                    className="text-sm text-base-content/80 line-clamp-1"
-                  >
-                    {item}
-                  </li>
-                ))
-              : null}
-            {note.notes?.length > 3 && (
-              <li className="text-xs text-base-content/60">
-                +{note.notes.length - 3} more
-              </li>
-            )}
-          </ul>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h4 className="font-medium text-base-content line-clamp-1 mb-1">
+              {note.title}
+            </h4>
+            <div className="mt-1">
+              {Array.isArray(note.notes) && note.notes.length > 0 ? (
+                <div className="space-y-1">
+                  {note.notes.slice(0, 2).map((item, noteIndex) => (
+                    <p
+                      key={noteIndex}
+                      className="text-sm text-base-content/60 line-clamp-1"
+                    >
+                      {item}
+                    </p>
+                  ))}
+                  {note.notes.length > 2 && (
+                    <p className="text-xs text-base-content/50">
+                      +{note.notes.length - 2} more items...
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm text-base-content/60">No notes yet...</p>
+              )}
+            </div>
+          </div>
         </div>
 
         {note.tags && note.tags.length > 0 && (
-          <div className="px-4 pb-3 flex flex-wrap gap-2">
-            {note.tags.map((tag, index) => (
+          <div className="flex items-center space-x-2 mt-3">
+            {note.tags.map((tag, tagIndex) => (
               <span
                 key={tag.id || tag.name}
                 className={`badge badge-sm ${
-                  badgeColors[index % badgeColors.length]
-                } text-white font-medium`}
+                  badgeColors[tagIndex % badgeColors.length]
+                }`}
               >
                 {tag.name}
               </span>
@@ -116,7 +146,7 @@ export default function Note({
         )}
 
         <div
-          className={`card-footer bg-primary/5 flex items-center justify-between p-2 rounded-b-lg transition-opacity duration-200 ${
+          className={`flex items-center justify-between mt-3 pt-2 border-t border-base-content/10 transition-opacity duration-200 ${
             isMobile
               ? isActive
                 ? "opacity-100"

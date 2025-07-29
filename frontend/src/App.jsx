@@ -12,6 +12,7 @@ import Profile from "./pages/Profile.jsx";
 import { UserContext } from "./context/UserContext.jsx";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import Landing from "./pages/Landing.jsx";
 
 export default function App() {
   const [search, setSearch] = useState("");
@@ -44,7 +45,9 @@ export default function App() {
           },
         }}
       />
+
       <Routes>
+        <Route path="/home" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -54,7 +57,7 @@ export default function App() {
             currentUser ? (
               <Layout search={search} setSearch={setSearch} />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/home" replace />
             )
           }
         >
@@ -68,7 +71,7 @@ export default function App() {
           <Route path="/admin" element={<AdminPage />} />
         </Route>
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
       </Routes>
 
       {selectedNoteId && currentUser && (
