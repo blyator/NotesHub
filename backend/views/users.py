@@ -237,3 +237,23 @@ def verify_token_route(token):
         return jsonify({"valid": True}), 200
     else:
         return jsonify({"valid": False, "error": "Invalid or expired token"}), 400
+    
+
+@users_bp.route("/auth/google", methods=["POST"])
+def google_auth():
+    data = request.get_json()
+    email = data.get("email")
+    name = data.get("name")
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        user = User(
+            name=name,
+            email=email,
+            password=generate_password_hash(os.urandom(16).hex()),
+        )
+        db.session.add(user)
+        db.session.commit()
+
+    token = create_access_token(identity=user.id)
+    return jsonify({"access_token": token, "user": {"id": user.id, "email": user.email, "name": user.name}})

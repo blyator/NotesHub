@@ -98,45 +98,42 @@ export const UserProvider = ({ children }) => {
 
   //***************logout a user *****************
 
-  function logout_user() {
-    toast
-      .promise(
-        (async () => {
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+  async function logout_user() {
+  const token = localStorage.getItem("access_token"); // get the latest token
 
-          const response = await fetch(`${API_BASE_URL}/logout`, {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${auth_token}`,
-            },
-          });
+  toast.promise(
+    (async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-          const res = await response.json();
-
-          if (!res.success) {
-            throw new Error(res.message || "Logout failed");
-          }
-
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("showWelcomeMsg");
-          setAuthToken(null);
-          setCurrentUser(null);
-          setNotes([]);
-
-          return res;
-        })(),
-        {
-          loading: "Logging out...",
-          error: (err) => err.message || "Logout failed",
-        }
-      )
-      .then(() => {
-        navigate("/home");
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
+      const response = await fetch(`${API_BASE_URL}/logout`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-  }
+
+      const res = await response.json();
+
+      if (!res.success) {
+        throw new Error(res.message || "Logout failed");
+      }
+
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("showWelcomeMsg");
+      setAuthToken(null);
+      setCurrentUser(null);
+      setNotes([]);
+
+      return res;
+    })(),
+    {
+      loading: "Logging out...",
+      success: "Logged out successfully",
+      error: (err) => err.message || "Logout failed",
+    }
+  ).then(() => navigate("/home"));
+}
+
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");

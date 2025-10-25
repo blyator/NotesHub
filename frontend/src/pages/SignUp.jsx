@@ -15,6 +15,8 @@ import toast from "react-hot-toast";
 import NavHome from "../components/NavHome";
 import { useGoogleLogin } from "@react-oauth/google";
 
+const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -134,46 +136,42 @@ const Signup = () => {
   };
 
   const googleSignup = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsGoogleLoading(true);
-      try {
-        const userInfoResponse = await fetch(
-          `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`
-        );
-        const userInfo = await userInfoResponse.json();
+  onSuccess: async (tokenResponse) => {
+    setIsGoogleLoading(true);
+    try {
+      const userInfoResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`
+      );
+      const userInfo = await userInfoResponse.json();
 
-        const googleUser = {
+      const res = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           email: userInfo.email,
-          password: userInfo.id,
           name: userInfo.name,
-          provider: "google",
-        };
+        }),
+    });
 
-        const user = await register_user(
-          googleUser.name,
-          googleUser.email,
-          googleUser.password,
-          "google"
-        );
+      const data = await res.json();
 
-        toast.success(`Welcome, ${user?.name || user?.email || "friend"}!`);
-        localStorage.setItem("showWelcomeMsg", "true");
+      if (res.ok && data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
         await fetchCurrentUser();
-        await fetchNotes();
-        setJustSignedUp(true);
-        navigate(from, { replace: true });
-      } catch (error) {
-        console.error("Google signup failed:", error);
-        toast.error("Google signup failed.");
-      } finally {
-        setIsGoogleLoading(false);
+        navigate("/notes");
+      } else {
+        toast.error(data.error || "Google signup failed.");
       }
-    },
-    onError: () => {
-      toast.error("Google signup failed");
+    } catch (error) {
+      console.error(error);
+      toast.error("Google signup failed. Please try again.");
+    } finally {
       setIsGoogleLoading(false);
-    },
-  });
+    }
+  },
+});
+
+
 
   const handleGoogleSignup = () => {
     googleSignup();

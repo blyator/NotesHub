@@ -45,7 +45,8 @@ class Note(db.Model):
         'Tag',
         secondary='note_tags',
         back_populates='notes',
-        lazy='subquery'
+        lazy='subquery',
+        overlaps="note_tags_assoc,tag"
     )
 
 
@@ -60,7 +61,8 @@ class Tag(db.Model):
         'Note',
         secondary='note_tags',
         back_populates='tags',
-        lazy='subquery'
+        lazy='subquery',
+        overlaps="note_tags_assoc,note"
     )
 
 
@@ -70,8 +72,16 @@ class NoteTag(db.Model):
     note_id = db.Column(db.Integer, db.ForeignKey('notes.id'), primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
 
-    note = db.relationship('Note', backref=db.backref('note_tags_assoc', lazy=True))
-    tag = db.relationship('Tag', backref=db.backref('note_tags_assoc', lazy=True))
+    note = db.relationship(
+        'Note',
+        backref=db.backref('note_tags_assoc', lazy=True, overlaps="tags,notes"),
+        overlaps="tags,notes"
+    )
+    tag = db.relationship(
+        'Tag',
+        backref=db.backref('note_tags_assoc', lazy=True, overlaps="tags,notes"),
+        overlaps="notes,tags"
+    )
 
 
 class TokenBlocklist(db.Model):

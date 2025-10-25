@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import NavHome from "../components/NavHome";
 import { useGoogleLogin } from "@react-oauth/google";
 
+const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -89,44 +91,48 @@ const Login = () => {
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsGoogleLoading(true);
-      try {
-        const userInfoResponse = await fetch(
-          `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`
-        );
-        const userInfo = await userInfoResponse.json();
+  onSuccess: async (tokenResponse) => {
+    setIsGoogleLoading(true);
+    try {
+      const userInfoResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResponse.access_token}`
+      );
+      const userInfo = await userInfoResponse.json();
 
-        const googleUser = {
+      const res = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           email: userInfo.email,
-          password: userInfo.id,
           name: userInfo.name,
-          provider: "google",
-        };
+        }),
+      });
 
-        const user = await login_user(
-          googleUser.email,
-          googleUser.password,
-          "google",
-          googleUser.name
-        );
+      const data = await res.json();
+
+      if (res.ok && data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("showWelcomeMsg", "true");
         await fetchCurrentUser();
         await fetchNotes();
         setJustLoggedIn(true);
+        toast.success(`Welcome back, ${data.user.name}!`);
         navigate(from, { replace: true });
-      } catch (error) {
-        console.error("Google login failed:", error);
-        toast.error("Google login failed.");
-      } finally {
-        setIsGoogleLoading(false);
+      } else {
+        toast.error(data.error || "Google login failed.");
       }
-    },
-    onError: () => {
-      toast.error("Google login failed");
+    } catch (error) {
+      console.error(error);
+      toast.error("Google login failed. Please try again.");
+    } finally {
       setIsGoogleLoading(false);
-    },
-  });
+    }
+  },
+  onError: () => {
+    toast.error("Google login failed");
+    setIsGoogleLoading(false);
+  },
+});
 
   const handleGoogleLogin = () => {
     googleLogin();
